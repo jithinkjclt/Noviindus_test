@@ -31,11 +31,11 @@ class LoginCubit extends Cubit<LoginState> {
         final String errorMessage =
             response['error'] ?? 'Login failed. Please try again.';
         emit(LoginFailure(errorMessage));
-        showCustomSnackbar.error(context, message: errorMessage);
+        ShowCustomSnackbar.error(context, message: errorMessage);
       }
     } catch (e) {
       emit(LoginFailure(e.toString()));
-      showCustomSnackbar.error(
+      ShowCustomSnackbar.error(
         context,
         message: "An unexpected error occurred.",
       );

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:noviindus_test/presentation/screens/login_page/cubit/login_cubit.dart';
+import 'package:noviindus_test/presentation/screens/patient_list/patient_list_screen.dart';
 import 'package:noviindus_test/presentation/widget/custom_button.dart';
 import 'package:noviindus_test/presentation/widget/custom_text.dart';
 import 'package:noviindus_test/presentation/widget/customtextfield.dart';
@@ -83,7 +84,11 @@ class LoginPage extends StatelessWidget {
                         40.hBox,
                         CustomButton(
                           onTap: () {
-                            // Screen.open(context, target)
+                            Screen.open(
+                              context,
+                              PatientListScreen(),
+                              isAnimate: true,
+                            );
                             // cubit.login(context);
                           },
                           fontSize: 17,

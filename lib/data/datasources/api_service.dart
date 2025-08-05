@@ -19,7 +19,7 @@ class ApiService {
   static Future<bool> _isConnected(context) async {
     var connectivity = await Connectivity().checkConnectivity();
     if (connectivity == ConnectivityResult.none) {
-      showCustomSnackbar.error(
+      ShowCustomSnackbar.error(
         context,
         message: "No internet connection. Please check your connectivity.",
         icon: Icons.wifi_off,
@@ -108,21 +108,21 @@ class ApiService {
         };
       }
     } on SocketException {
-      showCustomSnackbar.error(
+      ShowCustomSnackbar.error(
         context,
         message: "Network error. Please check your connection.",
         icon: Icons.signal_wifi_statusbar_connected_no_internet_4,
       );
       return {'statusCode': 503, 'error': 'Network error', 'offline': true};
     } on TimeoutException {
-      showCustomSnackbar.warning(
+      ShowCustomSnackbar.warning(
         context,
         message: "Request timed out. Try again.",
         icon: Icons.timer_off,
       );
       return {'statusCode': 408, 'error': "Request timed out. Try again."};
     } catch (e) {
-      showCustomSnackbar.error(
+      ShowCustomSnackbar.error(
         context,
         message: "Something went wrong. Please try again.",
         icon: Icons.error_outline,

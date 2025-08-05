@@ -131,7 +131,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           ),
         SizedBox(
           width: widget.width,
-          height: 48.0,
+          height: widget.textFieldHeight,
           child: TextFormField(
             validator: widget.validator,
             controller: widget.controller,
@@ -142,15 +142,16 @@ class _CustomTextFieldState extends State<CustomTextField> {
             onChanged: widget.onChanged,
             style: TextStyle(height: widget.height, fontSize: 14),
             decoration: InputDecoration(
+              isDense: true,
               hintText: widget.hintText,
               hintStyle: TextStyle(
                 fontSize: widget.hintTextSize ?? 14,
                 fontWeight: widget.hintTextWeight ?? FontWeight.w300,
                 color: widget.hintTextColor ?? Colors.grey,
-                height: 1.5,
+                overflow: TextOverflow.ellipsis,
               ),
               contentPadding: const EdgeInsets.symmetric(
-                horizontal: 12,
+                horizontal: 8,
                 vertical: 12,
               ),
               fillColor: widget.fillColor ?? textFieldFillColor,
@@ -171,46 +172,63 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     ),
               errorStyle: const TextStyle(height: 0.01),
               prefixIcon: widget.leadingIcon != null
-                  ? Icon(widget.leadingIcon, color: Colors.black, size: 20)
-                  : null,
-              suffixIcon: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (widget.trailingIcon != null)
-                    GestureDetector(
-                      onTap: widget.onTrailingIconTap,
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: 8, right: 4),
                       child: Icon(
-                        widget.trailingIcon,
-                        size: widget.trailingIconSize,
-                        color: widget.trailingIconColor,
-                      ),
-                    ),
-                  if (widget.showCalendar)
-                    IconButton(
-                      icon: const Icon(
-                        Icons.calendar_today,
-                        color: Colors.grey,
-                      ),
-                      onPressed: _showCustomCalendarDialog,
-                      iconSize: 20,
-                    ),
-                  if (widget.isPassword)
-                    IconButton(
-                      icon: Icon(
-                        _isObscured
-                            ? Icons.visibility_off_outlined
-                            : Icons.visibility,
-                        color: Colors.black,
+                        widget.leadingIcon,
                         size: 20,
+                        color: Colors.grey.shade400,
                       ),
-                      onPressed: () {
-                        setState(() {
-                          _isObscured = !_isObscured;
-                        });
-                      },
-                    ),
-                ],
+                    )
+                  : null,
+              prefixIconConstraints: const BoxConstraints(
+                minWidth: 32,
+                minHeight: 32,
               ),
+              suffixIcon: widget.trailingIcon != null
+                  ? SizedBox(
+                      width: 72,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          if (widget.trailingIcon != null)
+                            GestureDetector(
+                              onTap: widget.onTrailingIconTap,
+                              child: Icon(
+                                widget.trailingIcon,
+                                size: widget.trailingIconSize,
+                                color: widget.trailingIconColor,
+                              ),
+                            ),
+                          if (widget.showCalendar)
+                            IconButton(
+                              icon: const Icon(
+                                Icons.calendar_today,
+                                color: Colors.grey,
+                              ),
+                              onPressed: _showCustomCalendarDialog,
+                              iconSize: 20,
+                            ),
+                          if (widget.isPassword)
+                            IconButton(
+                              icon: Icon(
+                                _isObscured
+                                    ? Icons.visibility_off_outlined
+                                    : Icons.visibility,
+                                color: Colors.black,
+                                size: 20,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _isObscured = !_isObscured;
+                                });
+                              },
+                            ),
+                        ],
+                      ),
+                    )
+                  : SizedBox(),
             ),
           ),
         ),

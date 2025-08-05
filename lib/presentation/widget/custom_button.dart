@@ -5,7 +5,7 @@ import 'custom_text.dart';
 
 class CustomButton extends StatelessWidget {
   const CustomButton({
-    Key? key,
+    super.key,
     required this.onTap,
     required this.text,
     this.width,
@@ -25,7 +25,7 @@ class CustomButton extends StatelessWidget {
     this.iconColor,
     this.iconSize,
     this.fontFamily,
-  }) : super(key: key);
+  });
 
   final VoidCallback onTap;
   final String text;
@@ -58,34 +58,34 @@ class CustomButton extends StatelessWidget {
         ),
         child: isLoading
             ? SizedBox(
-          width: 24.0,
-          height: 24.0,
-          child: CircularProgressIndicator(
-            strokeWidth: 2.0,
-            valueColor: AlwaysStoppedAnimation<Color>(textColor),
-          ),
-        )
-            : Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (icon != null)
-              Icon(
-                icon,
-                size: iconSize ?? 20.0,
-                color: iconColor ?? textColor,
-              ),
-            if (icon != null) const SizedBox(width: 8.0),
-            child ??
-                AppText(
-                  text,
-                  size: fontSize,
-                  color: textColor,
-                  weight: weight,
-                  family: fontFamily,
+                width: 24.0,
+                height: 24.0,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.0,
+                  valueColor: AlwaysStoppedAnimation<Color>(textColor),
                 ),
-          ],
-        ),
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (icon != null)
+                    Icon(
+                      icon,
+                      size: iconSize ?? 20.0,
+                      color: iconColor ?? textColor,
+                    ),
+                  if (icon != null) const SizedBox(width: 8.0),
+                  child ??
+                      AppText(
+                        text,
+                        size: fontSize,
+                        color: textColor,
+                        weight: weight,
+                        family: fontFamily,
+                      ),
+                ],
+              ),
       ),
     );
   }

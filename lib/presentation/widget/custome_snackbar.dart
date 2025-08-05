@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'custom_text.dart';
 
-class showCustomSnackbar {
+class ShowCustomSnackbar {
   static void _show(
     BuildContext context, {
     required String message,
