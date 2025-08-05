@@ -24,7 +24,7 @@ class CustomDropdownField<T> extends StatefulWidget {
   final FontWeight? hintTextWeight;
 
   const CustomDropdownField({
-    Key? key,
+    super.key,
     this.boxname,
     this.hintText = 'Select an item',
     required this.items,
@@ -43,7 +43,7 @@ class CustomDropdownField<T> extends StatefulWidget {
     this.boxNameWeight,
     this.hintTextSize,
     this.hintTextWeight,
-  }) : super(key: key);
+  });
 
   @override
   _CustomDropdownFieldState<T> createState() => _CustomDropdownFieldState<T>();

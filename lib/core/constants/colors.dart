@@ -8,7 +8,6 @@ const Color buttonSecondaryColor = Color(0xFFC4E1C9);
 
 const Color colorBlack = Color(0xFF000000);
 const Color textSecondaryColor = Color(0xFF404040);
-const Color textGreenColor = Color(0xFF006837);
 const Color textBlueColor = Color(0xFF0028FC);
 
 const Color textFormBorder = Color(0xFFD0D0D0);

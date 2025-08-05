@@ -59,7 +59,7 @@ class PatientListTile extends StatelessWidget {
                         8.hBox,
                         AppText(
                           packageName,
-                          color: textGreenColor,
+                          color: buttonPrimaryColor,
                           size: 14,
                           weight: FontWeight.w400,
                         ),

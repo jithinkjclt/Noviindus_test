@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:noviindus_test/presentation/screens/register/widget/payment_selector.dart';
+import 'package:noviindus_test/presentation/screens/register/widget/treatment_add.dart';
 import 'package:noviindus_test/presentation/widget/custom_text.dart';
 import 'package:noviindus_test/presentation/widget/spacing_extensions.dart';
 
@@ -91,7 +92,15 @@ class RegisterPage extends StatelessWidget {
                   CustomButton(
                     iconSize: 18,
                     icon: Icons.add,
-                    onTap: () {},
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AddPatientsDialog();
+                        },
+                      );
+                    },
+
                     fontSize: 15,
                     weight: FontWeight.w500,
                     text: "Add Treatments",

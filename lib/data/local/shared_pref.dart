@@ -20,6 +20,5 @@ class SplashSharedPref {
 
   static Future<void> printToken() async {
     final token = await getToken();
-    print('Stored Token: $token');
   }
 }
