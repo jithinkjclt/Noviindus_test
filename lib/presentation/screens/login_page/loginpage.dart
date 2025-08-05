@@ -17,7 +17,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: scaffoldColor,
+      backgroundColor: colorWhite,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -86,7 +86,10 @@ class LoginPage extends StatelessWidget {
                           onTap: () {
                             Screen.open(
                               context,
-                              PatientListScreen(),
+                              PatientListScreen(
+                                email: cubit.emailController.text,
+                                password: cubit.passwordController.text,
+                              ),
                               isAnimate: true,
                             );
                             // cubit.login(context);

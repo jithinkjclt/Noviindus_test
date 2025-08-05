@@ -32,7 +32,6 @@ class ShowCustomSnackbar {
       duration: duration,
       margin: margin,
       behavior: SnackBarBehavior.floating,
-      // Mimics FlushbarStyle.FLOATING
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12), // Mimics borderRadius
       ),

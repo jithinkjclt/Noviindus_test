@@ -1,12 +1,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
+import '../../../../data/datasources/api_service.dart';
+import '../../../../presentation/widget/custome_snackbar.dart';
+
 part 'patient_list_state.dart';
 
 class PatientListCubit extends Cubit<PatientListState> {
-  PatientListCubit() : super(PatientListInitial());
-
-  // dummy data
+  PatientListCubit(this.email, this.password) : super(PatientListInitial());
   final List<Map<String, dynamic>> patients = [
     {
       'patientNumber': 1,
@@ -39,5 +40,38 @@ class PatientListCubit extends Cubit<PatientListState> {
     // Add more patient data as needed
   ];
 
-  getPatients() {}
+  final String email;
+  final String password;
+
+  Future<void> getPatients(context) async {
+    emit(PatientListLoading());
+    try {
+      final response = await ApiService.post(
+        context: context,
+        endpoint: "GetPatientList", // 👈 Replace with actual endpoint name
+        body: {
+          "username": email,
+          "password": password,
+        },
+        requiresAuth: false,
+      );
+
+      if (response['statusCode'] == 200 && response['data'] != null) {
+        final List<Map<String, dynamic>> patients =
+        List<Map<String, dynamic>>.from(response['data']);
+        emit(PatientListLoaded(patients));
+      } else {
+        final String errorMessage =
+            response['error'] ?? 'Failed to fetch patient list.';
+        emit(PatientListFailure(errorMessage));
+        ShowCustomSnackbar.error(context, message: errorMessage);
+      }
+    } catch (e) {
+      emit(PatientListFailure(e.toString()));
+      ShowCustomSnackbar.error(
+        context,
+        message: "An unexpected error occurred.",
+      );
+    }
+  }
 }

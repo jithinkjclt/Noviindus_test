@@ -4,23 +4,33 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:noviindus_test/core/constants/colors.dart';
 import 'package:noviindus_test/presentation/screens/patient_list/cubit/patient_list_cubit.dart';
 import 'package:noviindus_test/presentation/screens/patient_list/widgets/patient_tile.dart';
+import 'package:noviindus_test/presentation/screens/register/register_page.dart';
 import 'package:noviindus_test/presentation/widget/custom_appbar.dart';
 import 'package:noviindus_test/presentation/widget/custom_button.dart';
 import 'package:noviindus_test/presentation/widget/custom_text.dart';
 import 'package:noviindus_test/presentation/widget/customtextfield.dart';
+import 'package:noviindus_test/presentation/widget/page_navigation.dart';
 import 'package:noviindus_test/presentation/widget/spacing_extensions.dart';
 
 class PatientListScreen extends StatelessWidget {
-  const PatientListScreen({super.key});
+  const PatientListScreen({
+    super.key,
+    required this.email,
+    required this.password,
+  });
+
+  final String email;
+  final String password;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: const CustomAppBar(),
-      backgroundColor: Colors.white,
+      backgroundColor: colorWhite,
       body: BlocProvider(
-        create: (context) => PatientListCubit()..getPatients(),
+        create: (context) =>
+            PatientListCubit(email, password)..getPatients(context),
         child: BlocBuilder<PatientListCubit, PatientListState>(
           builder: (context, state) {
             final cubit = context.read<PatientListCubit>();
@@ -45,7 +55,9 @@ class PatientListScreen extends StatelessWidget {
                             noBorder: false,
                           ),
                           CustomButton(
-                            onTap: () {},
+                            onTap: () {
+                              // Handle search button tap
+                            },
                             fontSize: 12,
                             weight: FontWeight.w500,
                             text: "Search",
@@ -100,24 +112,32 @@ class PatientListScreen extends StatelessWidget {
                 5.hBox,
                 const Divider(),
                 Expanded(
-                  child: ListView.builder(
-                    itemCount: cubit.patients.length,
-                    itemBuilder: (context, index) {
-                      final patient = cubit.patients[index];
-                      return PatientListTile(
-                        patientNumber: patient['patientNumber'],
-                        patientName: patient['patientName'],
-                        packageName: patient['packageName'],
-                        bookingDate: patient['bookingDate'],
-                        assignedTo: patient['assignedTo'],
-                      );
+                  child: RefreshIndicator(
+                    color: iconGreenColor,
+                    onRefresh: () async {
+                      await cubit.getPatients(context);
                     },
+                    child: ListView.builder(
+                      itemCount: cubit.patients.length,
+                      itemBuilder: (context, index) {
+                        final patient = cubit.patients[index];
+                        return PatientListTile(
+                          patientNumber: patient['patientNumber'],
+                          patientName: patient['patientName'],
+                          packageName: patient['packageName'],
+                          bookingDate: patient['bookingDate'],
+                          assignedTo: patient['assignedTo'],
+                        );
+                      },
+                    ),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: CustomButton(
-                    onTap: () {},
+                    onTap: () {
+                      Screen.open(context, RegisterPage());
+                    },
                     fontSize: 17,
                     weight: FontWeight.w600,
                     text: "Register Now",

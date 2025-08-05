@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:connectivity_plus/connectivity_plus.dart';
 
@@ -9,19 +9,13 @@ import '../../core/constants/api_endpoints.dart';
 import '../../presentation/widget/custome_snackbar.dart';
 import '../../data/local/shared_pref.dart';
 
-class NoInternetException implements Exception {
-  final String message;
-
-  NoInternetException(this.message);
-}
-
 class ApiService {
-  static Future<bool> _isConnected(context) async {
+  static Future<bool> _isConnected(BuildContext context) async {
     var connectivity = await Connectivity().checkConnectivity();
     if (connectivity == ConnectivityResult.none) {
       ShowCustomSnackbar.error(
         context,
-        message: "No internet connection. Please check your connectivity.",
+        message: "No internet connection.",
         icon: Icons.wifi_off,
       );
       return false;
@@ -30,7 +24,7 @@ class ApiService {
   }
 
   static Future<Map<String, dynamic>> _request({
-    required context,
+    required BuildContext context,
     required String endpoint,
     required String method,
     Map<String, dynamic>? body,
@@ -38,63 +32,31 @@ class ApiService {
     String? tempToken,
   }) async {
     if (!await _isConnected(context)) {
-      return {
-        'statusCode': 503,
-        'error': 'No internet connection',
-        'offline': true,
-      };
+      return {'statusCode': 503, 'error': 'No internet', 'offline': true};
     }
 
     final url = Uri.parse("$baseUrl$endpoint");
     final headers = {'Content-Type': 'application/json'};
 
-    String? authToken = tempToken ?? await SplashSharedPref.getToken();
-
-    if (authToken != null && requiresAuth) {
-      headers['Authorization'] = 'Token $authToken';
+    String? token = tempToken ?? await SplashSharedPref.getToken();
+    if (token != null && requiresAuth) {
+      headers['Authorization'] = 'Token $token';
     }
-
-    debugPrint("─── API REQUEST ───");
-    debugPrint("Method: $method");
-    debugPrint("URL: $url");
-    debugPrint("Headers: $headers");
-    if (body != null) {
-      debugPrint("Body: ${jsonEncode(body)}");
-    }
-    debugPrint("──────────────────");
-
-    http.Response response;
 
     try {
-      switch (method.toUpperCase()) {
-        case 'GET':
-          response = await http.get(url, headers: headers);
-          break;
-        case 'POST':
-          response = await http.post(
-            url,
-            headers: headers,
-            body: jsonEncode(body),
-          );
-          break;
-        case 'PUT':
-          response = await http.put(
-            url,
-            headers: headers,
-            body: jsonEncode(body),
-          );
-          break;
-        case 'DELETE':
-          response = await http.delete(url, headers: headers);
-          break;
-        default:
-          throw Exception("Invalid HTTP method: $method");
-      }
+      http.Response response;
 
-      debugPrint("─── API RESPONSE ───");
-      debugPrint("Status Code: ${response.statusCode}");
-      debugPrint("Response Body: ${response.body}");
-      debugPrint("────────────────────");
+      if (method == 'GET') {
+        response = await http.get(url, headers: headers);
+      } else if (method == 'POST') {
+        response = await http.post(
+          url,
+          headers: headers,
+          body: jsonEncode(body),
+        );
+      } else {
+        throw Exception('Unsupported method: $method');
+      }
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return {
@@ -104,33 +66,30 @@ class ApiService {
       } else {
         return {
           'statusCode': response.statusCode,
-          'error': jsonDecode(response.body)['message'] ?? 'Unknown error',
+          'error': jsonDecode(response.body)['message'] ?? 'Error occurred',
         };
       }
     } on SocketException {
       ShowCustomSnackbar.error(
         context,
-        message: "Network error. Please check your connection.",
-        icon: Icons.signal_wifi_statusbar_connected_no_internet_4,
+        message: "Network error",
+        icon: Icons.signal_wifi_bad,
       );
       return {'statusCode': 503, 'error': 'Network error', 'offline': true};
     } on TimeoutException {
       ShowCustomSnackbar.warning(
         context,
-        message: "Request timed out. Try again.",
+        message: "Timeout",
         icon: Icons.timer_off,
       );
-      return {'statusCode': 408, 'error': "Request timed out. Try again."};
+      return {'statusCode': 408, 'error': 'Request timeout'};
     } catch (e) {
       ShowCustomSnackbar.error(
         context,
-        message: "Something went wrong. Please try again.",
-        icon: Icons.error_outline,
+        message: "Unexpected error",
+        icon: Icons.error,
       );
-      return {
-        'statusCode': 500,
-        'error': "Something went wrong: ${e.toString()}",
-      };
+      return {'statusCode': 500, 'error': 'Unexpected error: $e'};
     }
   }
 
@@ -143,7 +102,7 @@ class ApiService {
     return await _request(
       context: context,
       endpoint: endpoint,
-      method: "GET",
+      method: 'GET',
       requiresAuth: requiresAuth,
       tempToken: token,
     );
@@ -159,40 +118,8 @@ class ApiService {
     return await _request(
       context: context,
       endpoint: endpoint,
-      method: "POST",
+      method: 'POST',
       body: body,
-      requiresAuth: requiresAuth,
-      tempToken: token,
-    );
-  }
-
-  static Future<Map<String, dynamic>> put({
-    required BuildContext context,
-    required String endpoint,
-    required Map<String, dynamic> body,
-    bool requiresAuth = true,
-    String? token,
-  }) async {
-    return await _request(
-      context: context,
-      endpoint: endpoint,
-      method: "PUT",
-      body: body,
-      requiresAuth: requiresAuth,
-      tempToken: token,
-    );
-  }
-
-  static Future<Map<String, dynamic>> delete({
-    required BuildContext context,
-    required String endpoint,
-    bool requiresAuth = true,
-    String? token,
-  }) async {
-    return await _request(
-      context: context,
-      endpoint: endpoint,
-      method: "DELETE",
       requiresAuth: requiresAuth,
       tempToken: token,
     );

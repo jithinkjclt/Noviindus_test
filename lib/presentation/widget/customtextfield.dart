@@ -185,7 +185,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 minWidth: 32,
                 minHeight: 32,
               ),
-              suffixIcon: widget.trailingIcon != null
+              suffixIcon:
+                  (widget.trailingIcon != null ||
+                      widget.showCalendar ||
+                      widget.isPassword)
                   ? SizedBox(
                       width: 72,
                       child: Row(
@@ -205,7 +208,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                             IconButton(
                               icon: const Icon(
                                 Icons.calendar_today,
-                                color: Colors.grey,
+                                color: iconGreenColor,
                               ),
                               onPressed: _showCustomCalendarDialog,
                               iconSize: 20,
@@ -228,7 +231,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                         ],
                       ),
                     )
-                  : SizedBox(),
+                  : null,
             ),
           ),
         ),
