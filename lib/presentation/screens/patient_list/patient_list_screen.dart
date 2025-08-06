@@ -34,7 +34,6 @@ class PatientListScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CustomTextField(
-
                         width: context.deviceSize.width / 1.5,
                         hintText: 'Search for treatments',
                         hintTextWeight: FontWeight.w400,
@@ -46,9 +45,7 @@ class PatientListScreen extends StatelessWidget {
                         noBorder: false,
                       ),
                       CustomButton(
-                        onTap: () {
-                          // Handle search button tap
-                        },
+                        onTap: () {},
                         fontSize: 12,
                         weight: FontWeight.w500,
                         text: "Search",
@@ -98,7 +95,6 @@ class PatientListScreen extends StatelessWidget {
             ),
             5.hBox,
             const Divider(),
-
             Expanded(
               child: BlocBuilder<PatientListCubit, PatientListState>(
                 builder: (context, state) {
@@ -107,10 +103,21 @@ class PatientListScreen extends StatelessWidget {
                       child: CircularProgressIndicator(color: iconGreenColor),
                     );
                   } else if (state is PatientListLoaded) {
-                    if (state.patients.isEmpty) {
-                      return const Center(child: Text("No patients found."));
+                    if (state.patients.isNotEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/empty.png',
+                              height: context.deviceSize.height / 1.8,
+                            ),
+                            const SizedBox(height: 10),
+                            // const Text("No patients found."),
+                          ],
+                        ),
+                      );
                     }
-
                     return RefreshIndicator(
                       color: iconGreenColor,
                       onRefresh: () async {
@@ -126,13 +133,11 @@ class PatientListScreen extends StatelessWidget {
                               patient.patientDetails.isNotEmpty
                               ? patient.patientDetails.first
                               : null;
-
                           final formattedDate = patient.dateAndTime != null
                               ? DateFormat(
                                   'dd MMM yyyy, hh:mm a',
                                 ).format(patient.dateAndTime!)
                               : 'N/A';
-
                           return PatientListTile(
                             patientNumber: patient.id,
                             patientName: patient.name,
@@ -144,7 +149,57 @@ class PatientListScreen extends StatelessWidget {
                       ),
                     );
                   } else if (state is PatientListFailure) {
-                    return Center(child: Text('Error: ${state.error}'));
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.error_outline,
+                            size: 48,
+                            color: Colors.redAccent,
+                          ),
+                          const SizedBox(height: 10),
+                          const Text(
+                            'Something went wrong!',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            state.error,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: iconGreenColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            onPressed: () {
+                              context.read<PatientListCubit>().getPatients(
+                                context,
+                              );
+                            },
+                            icon: const Icon(
+                              Icons.refresh,
+                              color: Colors.white,
+                            ),
+                            label: const Text(
+                              'Reload',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
                   }
                   return const SizedBox.shrink();
                 },
