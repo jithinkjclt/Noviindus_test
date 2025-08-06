@@ -103,7 +103,7 @@ class PatientListScreen extends StatelessWidget {
                       child: CircularProgressIndicator(color: iconGreenColor),
                     );
                   } else if (state is PatientListLoaded) {
-                    if (state.patients.isNotEmpty) {
+                    if (state.patients.isEmpty) {
                       return Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
