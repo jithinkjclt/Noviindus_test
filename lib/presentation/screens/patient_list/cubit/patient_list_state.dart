@@ -8,7 +8,7 @@ final class PatientListInitial extends PatientListState {}
 final class PatientListLoading extends PatientListState {}
 
 final class PatientListLoaded extends PatientListState {
-  final List<Map<String, dynamic>> patients;
+  final List<Patient> patients;
 
   PatientListLoaded(this.patients);
 }

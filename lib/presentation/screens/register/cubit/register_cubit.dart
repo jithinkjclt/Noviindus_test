@@ -69,39 +69,39 @@ class RegisterCubit extends Cubit<RegisterState> {
   }
 
   void registor(BuildContext context) async {
-    emit(RegisterLoading());
-
-    final body = {
-      "name": nameController.text.trim(),
-      "phone": whatsappController.text.trim(),
-      "address": addressController.text.trim(),
-      "location": location,
-      "branch": branch,
-      "total_amount": totalAmountController.text.trim(),
-      "discount_amount": discountAmountController.text.trim(),
-      "advance_amount": advanceAmountController.text.trim(),
-      "balance_amount": balanceAmountController.text.trim(),
-      "date": dateController.text.trim(),
-      "hour": hour,
-      "minutes": minutes,
-      "treatments": treatments,
-    };
-
-    final response = await ApiService.post(
-      context: context,
-      endpoint: "ApiEndpoints.register", // Replace with your actual endpoint
-      body: body,
-    );
-
-    if (response['statusCode'] == 200 || response['statusCode'] == 201) {
-      ShowCustomSnackbar.success(context, message: "Registration successful!");
-      emit(RegisterSuccess());
-      // Optionally clear controllers or reset form
-    } else {
-      final error = response['error'] ?? 'Registration failed';
-      ShowCustomSnackbar.error(context, message: error);
-      emit(RegisterError(error));
-    }
+    // emit(RegisterLoading());
+    //
+    // final body = {
+    //   "name": nameController.text.trim(),
+    //   "phone": whatsappController.text.trim(),
+    //   "address": addressController.text.trim(),
+    //   "location": location,
+    //   "branch": branch,
+    //   "total_amount": totalAmountController.text.trim(),
+    //   "discount_amount": discountAmountController.text.trim(),
+    //   "advance_amount": advanceAmountController.text.trim(),
+    //   "balance_amount": balanceAmountController.text.trim(),
+    //   "date": dateController.text.trim(),
+    //   "hour": hour,
+    //   "minutes": minutes,
+    //   "treatments": treatments,
+    // };
+    //
+    // final response = await ApiService.post(
+    //   context: context,
+    //   endpoint: "ApiEndpoints.register", // Replace with your actual endpoint
+    //   body: body,
+    // );
+    //
+    // if (response['statusCode'] == 200 || response['statusCode'] == 201) {
+    //   ShowCustomSnackbar.success(context, message: "Registration successful!");
+    //   emit(RegisterSuccess());
+    //   // Optionally clear controllers or reset form
+    // } else {
+    //   final error = response['error'] ?? 'Registration failed';
+    //   ShowCustomSnackbar.error(context, message: error);
+    //   emit(RegisterError(error));
+    // }
   }
 
 }

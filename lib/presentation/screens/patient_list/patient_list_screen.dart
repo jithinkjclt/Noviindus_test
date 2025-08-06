@@ -1,26 +1,17 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:noviindus_test/core/constants/colors.dart';
 import 'package:noviindus_test/presentation/screens/patient_list/cubit/patient_list_cubit.dart';
 import 'package:noviindus_test/presentation/screens/patient_list/widgets/patient_tile.dart';
-import 'package:noviindus_test/presentation/screens/register/register_page.dart';
 import 'package:noviindus_test/presentation/widget/custom_appbar.dart';
 import 'package:noviindus_test/presentation/widget/custom_button.dart';
 import 'package:noviindus_test/presentation/widget/custom_text.dart';
 import 'package:noviindus_test/presentation/widget/customtextfield.dart';
-import 'package:noviindus_test/presentation/widget/page_navigation.dart';
 import 'package:noviindus_test/presentation/widget/spacing_extensions.dart';
 
 class PatientListScreen extends StatelessWidget {
-  const PatientListScreen({
-    super.key,
-    required this.email,
-    required this.password,
-  });
-
-  final String email;
-  final String password;
+  const PatientListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,128 +20,147 @@ class PatientListScreen extends StatelessWidget {
       appBar: const CustomAppBar(),
       backgroundColor: colorWhite,
       body: BlocProvider(
-        create: (context) =>
-            PatientListCubit(email, password)..getPatients(context),
-        child: BlocBuilder<PatientListCubit, PatientListState>(
-          builder: (context, state) {
-            final cubit = context.read<PatientListCubit>();
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Column(
+        create: (context) => PatientListCubit()..getPatients(context),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          CustomTextField(
-                            width: context.deviceSize.width / 1.5,
-                            hintText: 'Search for treatments',
-                            hintTextWeight: FontWeight.w400,
-                            hintTextSize: 14,
-                            leadingIcon: Icons.search,
-                            borderColor: Colors.grey.shade400,
-                            fillColor: Colors.white,
-                            hintTextColor: Colors.grey.shade400,
-                            noBorder: false,
-                          ),
-                          CustomButton(
-                            onTap: () {
-                              // Handle search button tap
-                            },
-                            fontSize: 12,
-                            weight: FontWeight.w500,
-                            text: "Search",
-                            boxColor: buttonPrimaryColor,
-                            textColor: Colors.white,
-                            height: 45,
-                            width: context.deviceSize.width / 4,
-                            borderRadius: 10,
-                          ),
-                        ],
+                      CustomTextField(
+                        width: context.deviceSize.width / 1.5,
+                        hintText: 'Search for treatments',
+                        hintTextWeight: FontWeight.w400,
+                        hintTextSize: 14,
+                        leadingIcon: Icons.search,
+                        borderColor: Colors.grey.shade400,
+                        fillColor: Colors.white,
+                        hintTextColor: Colors.grey.shade400,
+                        noBorder: false,
                       ),
-                      15.hBox,
-                      Row(
-                        children: [
-                          const AppText(
-                            'Sort by :',
-                            size: 16,
-                            weight: FontWeight.w500,
-                            color: textSecondaryColor,
-                          ),
-                          const Spacer(),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 8,
-                            ),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey.shade400),
-                              borderRadius: BorderRadius.circular(24),
-                            ),
-                            child: Row(
-                              children: [
-                                const AppText(
-                                  'Date',
-                                  size: 14,
-                                  color: Colors.black87,
-                                ),
-                                50.wBox,
-                                const Icon(
-                                  Icons.keyboard_arrow_down_rounded,
-                                  size: 20,
-                                  color: iconGreenColor,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                      CustomButton(
+                        onTap: () {
+                          // Handle search button tap
+                        },
+                        fontSize: 12,
+                        weight: FontWeight.w500,
+                        text: "Search",
+                        boxColor: buttonPrimaryColor,
+                        textColor: Colors.white,
+                        height: 45,
+                        width: context.deviceSize.width / 4,
+                        borderRadius: 10,
                       ),
                     ],
                   ),
-                ),
-                5.hBox,
-                const Divider(),
-                Expanded(
-                  child: RefreshIndicator(
-                    color: iconGreenColor,
-                    onRefresh: () async {
-                      await cubit.getPatients(context);
-                    },
-                    child: ListView.builder(
-                      itemCount: cubit.patients.length,
-                      itemBuilder: (context, index) {
-                        final patient = cubit.patients[index];
-                        return PatientListTile(
-                          patientNumber: patient['patientNumber'],
-                          patientName: patient['patientName'],
-                          packageName: patient['packageName'],
-                          bookingDate: patient['bookingDate'],
-                          assignedTo: patient['assignedTo'],
+                  15.hBox,
+                  Row(
+                    children: [
+                      const AppText(
+                        'Sort by :',
+                        size: 16,
+                        weight: FontWeight.w500,
+                        color: textSecondaryColor,
+                      ),
+                      const Spacer(),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade400),
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: const Row(
+                          children: [
+                            AppText('Date', size: 14, color: Colors.black87),
+                            SizedBox(width: 50),
+                            Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              size: 20,
+                              color: iconGreenColor,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            5.hBox,
+            const Divider(),
+
+            Expanded(
+              child: BlocBuilder<PatientListCubit, PatientListState>(
+                builder: (context, state) {
+                  if (state is PatientListLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(color: iconGreenColor),
+                    );
+                  } else if (state is PatientListLoaded) {
+                    if (state.patients.isEmpty) {
+                      return const Center(child: Text("No patients found."));
+                    }
+
+                    return RefreshIndicator(
+                      color: iconGreenColor,
+                      onRefresh: () async {
+                        await context.read<PatientListCubit>().getPatients(
+                          context,
                         );
                       },
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: CustomButton(
-                    onTap: () {
-                      Screen.open(context, RegisterPage());
-                    },
-                    fontSize: 17,
-                    weight: FontWeight.w600,
-                    text: "Register Now",
-                    boxColor: buttonPrimaryColor,
-                    textColor: Colors.white,
-                    height: 50,
-                    width: double.infinity,
-                    borderRadius: 10,
-                  ),
-                ),
-              ],
-            );
-          },
+                      child: ListView.builder(
+                        itemCount: state.patients.length,
+                        itemBuilder: (context, index) {
+                          final patient = state.patients[index];
+                          final patientDetails =
+                              patient.patientDetails.isNotEmpty
+                              ? patient.patientDetails.first
+                              : null;
+
+                          final formattedDate = patient.dateAndTime != null
+                              ? DateFormat(
+                                  'dd MMM yyyy, hh:mm a',
+                                ).format(patient.dateAndTime!)
+                              : 'N/A';
+
+                          return PatientListTile(
+                            patientNumber: patient.id,
+                            patientName: patient.name,
+                            packageName: patientDetails?.treatmentName ?? 'N/A',
+                            bookingDate: formattedDate,
+                            assignedTo: patient.user,
+                          );
+                        },
+                      ),
+                    );
+                  } else if (state is PatientListFailure) {
+                    return Center(child: Text('Error: ${state.error}'));
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: CustomButton(
+                onTap: () {},
+                fontSize: 17,
+                weight: FontWeight.w600,
+                text: "Register Now",
+                boxColor: buttonPrimaryColor,
+                textColor: Colors.white,
+                height: 50,
+                width: double.infinity,
+                borderRadius: 10,
+              ),
+            ),
+          ],
         ),
       ),
     );

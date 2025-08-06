@@ -40,66 +40,84 @@ class PatientListTile extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Column(
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AppText(
-                      '$patientNumber.',
-                      weight: FontWeight.w500,
-                      size: 18,
-                    ),
-                    10.wBox, // Adjust this spacing as needed
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AppText(patientName, weight: FontWeight.w500, size: 18),
-                        8.hBox,
-                        AppText(
-                          packageName,
-                          color: buttonPrimaryColor,
-                          size: 14,
-                          weight: FontWeight.w400,
-                        ),
-                        8.hBox,
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.calendar_today,
-                              size: 13.0,
-                              color: redColor,
-                            ),
-                            4.wBox,
-                            AppText(
-                              bookingDate,
-                              color: Colors.grey,
-                              size: 15,
-                              weight: FontWeight.w400,
-                            ),
-                            16.wBox,
-                            const Icon(
-                              Icons.person,
-                              size: 13.0,
-                              color: redColor,
-                            ),
-                            4.wBox,
-                            AppText(
-                              assignedTo,
-                              color: Colors.grey,
-                              size: 15,
-                              weight: FontWeight.w400,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
+                AppText(
+                  '$patientNumber.',
+                  weight: FontWeight.w500,
+                  size: 18,
+                ),
+                10.wBox,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppText(
+                        patientName.isNotEmpty ? patientName : 'Unknown',
+                        weight: FontWeight.w500,
+                        size: 18,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      8.hBox,
+                      AppText(
+                        packageName.isNotEmpty ? packageName : 'N/A',
+                        color: buttonPrimaryColor,
+                        size: 14,
+                        weight: FontWeight.w400,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      8.hBox,
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        spacing: 16.0,
+                        runSpacing: 8.0,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.calendar_today,
+                                  size: 13.0, color: redColor),
+                              4.wBox,
+                              AppText(
+                                bookingDate.isNotEmpty
+                                    ? bookingDate
+                                    : 'N/A',
+                                color: Colors.grey,
+                                size: 15,
+                                weight: FontWeight.w400,
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.person,
+                                  size: 13.0, color: redColor),
+                              4.wBox,
+                              AppText(
+                                assignedTo.isNotEmpty
+                                    ? assignedTo
+                                    : 'Unassigned',
+                                color: Colors.grey,
+                                size: 15,
+                                weight: FontWeight.w400,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
+
           const Divider(
             color: Colors.grey,
             height: 1,
@@ -107,23 +125,30 @@ class PatientListTile extends StatelessWidget {
             endIndent: 16.0,
           ),
 
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                AppText(
-                  'View Booking details',
-                  color: Colors.black,
-                  size: 14,
-                  weight: FontWeight.w300,
-                ),
-                const Icon(
-                  Icons.arrow_forward_ios_sharp,
-                  size: 20.0,
-                  color: iconGreenColor,
-                ),
-              ],
+          // Bottom row
+          InkWell(
+            onTap: () {
+              // Optional: handle view booking details tap
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 25.0, vertical: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  AppText(
+                    'View Booking details',
+                    color: Colors.black,
+                    size: 14,
+                    weight: FontWeight.w300,
+                  ),
+                  const Icon(
+                    Icons.arrow_forward_ios_sharp,
+                    size: 20.0,
+                    color: iconGreenColor,
+                  ),
+                ],
+              ),
             ),
           ),
         ],

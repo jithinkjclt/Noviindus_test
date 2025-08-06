@@ -10,6 +10,7 @@ import 'package:noviindus_test/presentation/widget/page_navigation.dart';
 import 'package:noviindus_test/presentation/widget/spacing_extensions.dart';
 
 import '../../../core/constants/colors.dart';
+import '../../widget/custome_snackbar.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -53,9 +54,7 @@ class LoginPage extends StatelessWidget {
               child: BlocProvider(
                 create: (context) => LoginCubit(),
                 child: BlocConsumer<LoginCubit, LoginState>(
-                  listener: (context, state) {
-                    // No listener actions defined in this version
-                  },
+                  listener: (context, state) {},
                   builder: (context, state) {
                     final cubit = context.read<LoginCubit>();
                     return Column(
@@ -83,16 +82,25 @@ class LoginPage extends StatelessWidget {
                         ),
                         40.hBox,
                         CustomButton(
-                          onTap: () {
-                            Screen.open(
-                              context,
-                              PatientListScreen(
-                                email: cubit.emailController.text,
-                                password: cubit.passwordController.text,
-                              ),
-                              isAnimate: true,
-                            );
-                            // cubit.login(context);
+                          onTap: () async {
+                            if (cubit.emailController.text.isEmpty ||
+                                cubit.passwordController.text.isEmpty) {
+                              ShowCustomSnackbar.warning(
+                                context,
+                                message: "Please enter both email and password",
+                                icon: Icons.warning_amber_outlined,
+                              );
+                              return;
+                            }
+
+                            final isSuccess = await cubit.login(context);
+                            if (isSuccess) {
+                              Screen.open(
+                                context,
+                                PatientListScreen(),
+                                isAnimate: true,
+                              );
+                            }
                           },
                           fontSize: 17,
                           weight: FontWeight.w600,
@@ -104,6 +112,7 @@ class LoginPage extends StatelessWidget {
                           borderRadius: 10,
                           isLoading: state is LoginLoading,
                         ),
+
                         SizedBox(height: context.deviceSize.height / 7),
                         Center(
                           child: RichText(
