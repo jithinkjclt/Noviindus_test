@@ -1,1 +1,1 @@
-const String baseUrl = "https://erp.srichakra.in/api/v1/";
+const String baseUrl = "https://flutter-amr.noviindus.in/api/";

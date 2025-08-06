@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:noviindus_test/presentation/screens/register/widget/payment_selector.dart';
 import 'package:noviindus_test/presentation/screens/register/widget/treatment_add.dart';
 import 'package:noviindus_test/presentation/widget/custom_text.dart';
+import 'package:noviindus_test/presentation/widget/page_navigation.dart';
+import 'package:noviindus_test/presentation/widget/pdf_preview_widget.dart';
 import 'package:noviindus_test/presentation/widget/spacing_extensions.dart';
+import 'package:printing/printing.dart';
 
 import '../../../core/constants/colors.dart';
 import '../../widget/custom_appbar.dart';
@@ -194,9 +197,19 @@ class RegisterPage extends StatelessWidget {
                     ],
                   ),
                   50.hBox,
+
                   CustomButton(
                     iconSize: 18,
-                    onTap: () {},
+                    onTap: () async {
+                      // Navigate to a new screen that shows the PDF preview
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              PdfPreview(build: (format) => generatePdf()),
+                        ),
+                      );
+                    },
                     fontSize: 15,
                     weight: FontWeight.w500,
                     text: "Save",

@@ -7,7 +7,7 @@ class AppText extends StatelessWidget {
         this.color,
         this.height = 0,
         this.size = 14,
-        this.align,
+        this.textAlign,
         this.maxLines,
         this.family,
         this.weight,
@@ -23,7 +23,7 @@ class AppText extends StatelessWidget {
   final double width;
   final double? size;
   final FontWeight? weight;
-  final TextAlign? align;
+  final TextAlign? textAlign; // This is the property for text alignment
   final int? maxLines;
   final TextStyle? style;
   final TextOverflow? overflow;
@@ -41,7 +41,7 @@ class AppText extends StatelessWidget {
         fontWeight: weight,
         fontFamily: family,
       ),
-      textAlign: align,
+      textAlign: textAlign, // This correctly applies the text alignment
     );
   }
 }
