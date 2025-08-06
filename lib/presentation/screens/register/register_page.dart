@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:noviindus_test/presentation/screens/register/cubit/register_cubit.dart';
@@ -10,7 +9,6 @@ import 'package:noviindus_test/presentation/widget/page_navigation.dart';
 import 'package:noviindus_test/presentation/widget/pdf_preview_widget.dart';
 import 'package:noviindus_test/presentation/widget/spacing_extensions.dart';
 import 'package:printing/printing.dart';
-
 import '../../../core/constants/colors.dart';
 import '../../widget/custom_appbar.dart';
 import '../../widget/custom_button.dart';
@@ -29,6 +27,8 @@ class RegisterPage extends StatelessWidget {
         create: (context) => RegisterCubit(),
         child: BlocBuilder<RegisterCubit, RegisterState>(
           builder: (context, state) {
+            final cubit = context.read<RegisterCubit>();
+            final treatments = cubit.treatments;
             return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,20 +47,23 @@ class RegisterPage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-
                       children: [
                         CustomTextField(
+                          controller: cubit.nameController,
                           hintText: "Enter your Name",
                           boxname: "Name",
                         ),
                         15.hBox,
                         CustomTextField(
+                          controller: cubit.whatsappController,
+
                           hintText: "Enter your Whatsapp Number",
                           boxname: "Whatsapp Number",
                           keyboardType: TextInputType.number,
                         ),
                         15.hBox,
                         CustomTextField(
+                          controller: cubit.addressController,
                           hintText: "Enter your Address",
                           boxname: "Address",
                         ),
@@ -77,12 +80,16 @@ class RegisterPage extends StatelessWidget {
                             'Hyderabad',
                           ],
                           itemAsString: (String location) => location,
-                          onItemSelected: (String? selectedLocation) {},
+                          onItemSelected: (String? selectedLocation) {
+                            cubit.valueUpdate(
+                              cubit.location!,
+                              selectedLocation!,
+                            );
+                          },
                           fillColor: textFieldFillColor,
                           borderColor: textFormBorder,
                           hintTextColor: textFormGrey,
                         ),
-
                         15.hBox,
                         CustomDropdownField<String>(
                           boxname: 'Branch',
@@ -96,27 +103,62 @@ class RegisterPage extends StatelessWidget {
                             'Hyderabad',
                           ],
                           itemAsString: (String location) => location,
-                          onItemSelected: (String? selectedLocation) {},
+                          onItemSelected: (String? selectedLocation) {
+                            cubit.valueUpdate(cubit.branch!, selectedLocation!);
+                          },
                           fillColor: textFieldFillColor,
                           borderColor: textFormBorder,
                           hintTextColor: textFormGrey,
                         ),
                         15.hBox,
-
-                        TreatmentTile(
-                          leadingIndex: 1,
-                          title: 'Couple Combo Package',
-                          maleCount: 2,
-                          femaleCount: 3,
-                          onEditTap: () {
-                            print("Edit tapped");
-                          },
-                          onCloseTap: () {
-                            print("Close tapped");
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: treatments.length,
+                          itemBuilder: (context, index) {
+                            final treatment = treatments[index];
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 15.0),
+                              child: TreatmentTile(
+                                leadingIndex: index + 1,
+                                title: treatment['title'],
+                                maleCount: treatment['maleCount'],
+                                femaleCount: treatment['femaleCount'],
+                                onEditTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AddPatientsDialog(
+                                        initialTreatmentName:
+                                            treatment['title'],
+                                        initialMaleCount:
+                                            treatment['maleCount'],
+                                        initialFemaleCount:
+                                            treatment['femaleCount'],
+                                        onSave:
+                                            (
+                                              treatmentName,
+                                              maleCount,
+                                              femaleCount,
+                                            ) {
+                                              cubit.updateTreatment(
+                                                index,
+                                                treatmentName,
+                                                maleCount,
+                                                femaleCount,
+                                              );
+                                            },
+                                      );
+                                    },
+                                  );
+                                },
+                                onCloseTap: () {
+                                  cubit.removeTreatment(index);
+                                },
+                              ),
+                            );
                           },
                         ),
-
-                        15.hBox,
                         CustomButton(
                           iconSize: 18,
                           icon: Icons.add,
@@ -124,11 +166,19 @@ class RegisterPage extends StatelessWidget {
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
-                                return AddPatientsDialog();
+                                return AddPatientsDialog(
+                                  onSave:
+                                      (treatmentName, maleCount, femaleCount) {
+                                        cubit.addTreatment(
+                                          treatmentName,
+                                          maleCount,
+                                          femaleCount,
+                                        );
+                                      },
+                                );
                               },
                             );
                           },
-
                           fontSize: 15,
                           weight: FontWeight.w500,
                           text: "Add Treatments",
@@ -139,20 +189,22 @@ class RegisterPage extends StatelessWidget {
                           borderRadius: 10,
                         ),
                         15.hBox,
-
                         CustomTextField(
+                          controller: cubit.totalAmountController,
+
                           hintText: "",
                           boxname: "Total Amount",
                           keyboardType: TextInputType.number,
                         ),
                         15.hBox,
                         CustomTextField(
+                          controller: cubit.discountAmountController,
+
                           hintText: "",
                           boxname: "Discount Amount",
                           keyboardType: TextInputType.number,
                         ),
                         15.hBox,
-
                         AppText(
                           "Payment Option",
                           size: 16,
@@ -165,21 +217,24 @@ class RegisterPage extends StatelessWidget {
                         ),
                         15.hBox,
                         CustomTextField(
+                          controller: cubit.advanceAmountController,
                           hintText: "",
                           boxname: "Advance Amount",
                           keyboardType: TextInputType.number,
                         ),
                         15.hBox,
                         CustomTextField(
+                          controller: cubit.balanceAmountController,
                           hintText: "",
                           boxname: "Balance Amount",
                           keyboardType: TextInputType.number,
                         ),
                         15.hBox,
                         CustomTextField(
+                          controller: cubit.dateController,
+
                           boxname: "Select Date",
                           hintText: "yyyy-MM-dd",
-                          controller: TextEditingController(),
                           showCalendar: true,
                           onChanged: (value) {},
                         ),
@@ -189,9 +244,7 @@ class RegisterPage extends StatelessWidget {
                           size: 16,
                           weight: FontWeight.w400,
                         ),
-
                         10.hBox,
-
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -204,9 +257,11 @@ class RegisterPage extends StatelessWidget {
                                     (index + 1).toString().padLeft(2, '0'),
                               ),
                               itemAsString: (String hour) => hour,
-                              onItemSelected: (String? selectedHour) {
-                                // This is where you would handle the selected hour
-                                print('Selected hour: $selectedHour');
+                              onItemSelected: (String? selectedLocation) {
+                                cubit.valueUpdate(
+                                  cubit.hour!,
+                                  selectedLocation!,
+                                );
                               },
                               fillColor: textFieldFillColor,
                               borderColor: textFormBorder,
@@ -222,17 +277,20 @@ class RegisterPage extends StatelessWidget {
                                     (index + 1).toString().padLeft(2, '0'),
                               ),
                               itemAsString: (String location) => location,
-                              onItemSelected: (String? selectedLocation) {},
+                              onItemSelected: (String? selectedLocation) {
+                                cubit.valueUpdate(
+                                  cubit.minutes!,
+                                  selectedLocation!,
+                                );
+                              },
                               fillColor: textFieldFillColor,
                               borderColor: textFormBorder,
                               isTypable: false,
-
                               hintTextColor: textFormGrey,
                             ),
                           ],
                         ),
                         50.hBox,
-
                         CustomButton(
                           iconSize: 18,
                           onTap: () async {
@@ -246,22 +304,17 @@ class RegisterPage extends StatelessWidget {
                                   bookedDate: '06/08/2025 at 10:30 AM',
                                   treatmentDate: '10/08/2025',
                                   treatmentTime: '12:00 PM',
-                                  treatments: [
-                                    {
-                                      'name': 'Panchakarma',
-                                      'price': '₹300',
-                                      'male': '2',
-                                      'female': '1',
-                                      'total': '₹900',
-                                    },
-                                    {
-                                      'name': 'Abhyanga',
-                                      'price': '₹500',
-                                      'male': '1',
-                                      'female': '0',
-                                      'total': '₹500',
-                                    },
-                                  ],
+                                  treatments: treatments
+                                      .map(
+                                        (e) => {
+                                          'name': e['title'],
+                                          'price': '₹300',
+                                          'male': e['maleCount'].toString(),
+                                          'female': e['femaleCount'].toString(),
+                                          'total': '₹900',
+                                        },
+                                      )
+                                      .toList(),
                                   totalAmount: '₹1400',
                                   discount: '₹200',
                                   advance: '₹500',

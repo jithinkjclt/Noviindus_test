@@ -4,6 +4,19 @@ import '../../../../core/constants/colors.dart';
 import '../../../widget/custom_dropdown.dart';
 
 class AddPatientsDialog extends StatefulWidget {
+  final Function(String treatmentName, int maleCount, int femaleCount) onSave;
+  final String? initialTreatmentName;
+  final int? initialMaleCount;
+  final int? initialFemaleCount;
+
+  const AddPatientsDialog({
+    super.key,
+    required this.onSave,
+    this.initialTreatmentName,
+    this.initialMaleCount,
+    this.initialFemaleCount,
+  });
+
   @override
   _AddPatientsDialogState createState() => _AddPatientsDialogState();
 }
@@ -11,6 +24,25 @@ class AddPatientsDialog extends StatefulWidget {
 class _AddPatientsDialogState extends State<AddPatientsDialog> {
   int _maleCount = 0;
   int _femaleCount = 0;
+  String? _selectedTreatment;
+  String? _validationMessage;
+
+  final List<String> _treatments = const [
+    'Couple Combo Package',
+    'Abhyanga',
+    'Panchakarma',
+    'Shirodhara',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialTreatmentName != null) {
+      _selectedTreatment = widget.initialTreatmentName;
+      _maleCount = widget.initialMaleCount ?? 0;
+      _femaleCount = widget.initialFemaleCount ?? 0;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,44 +68,66 @@ class _AddPatientsDialogState extends State<AddPatientsDialog> {
             children: [
               CustomDropdownField<String>(
                 boxname: 'Choose Treatment',
-                hintText: 'Choose prefered treatment',
-                items: const [
-                  'Kozhikode',
-                  'Bangalore',
-                  'Chennai',
-                  'Mumbai',
-                  'Delhi',
-                  'Hyderabad',
-                ],
-                itemAsString: (String location) => location,
-                onItemSelected: (String? selectedLocation) {},
+                hintText: _selectedTreatment ?? 'Choose preferred treatment',
+                items: _treatments,
+                itemAsString: (String treatment) => treatment,
+                onItemSelected: (String? selectedTreatment) {
+                  setState(() {
+                    _selectedTreatment = selectedTreatment;
+                    _validationMessage = null;
+                  });
+                },
+                initialValue: _selectedTreatment,
                 fillColor: textFieldFillColor,
                 borderColor: textFormBorder,
                 hintTextColor: textFormGrey,
               ),
-              SizedBox(height: 24),
-              Text(
+              const SizedBox(height: 10),
+              if (_validationMessage != null)
+                Text(
+                  _validationMessage!,
+                  style: const TextStyle(color: Colors.red, fontSize: 14),
+                ),
+              const SizedBox(height: 14),
+              const Text(
                 "Add Patients",
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               _buildPatientCounter("Male", _maleCount, (count) {
                 setState(() {
                   _maleCount = count;
+                  _validationMessage = null;
                 });
               }),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               _buildPatientCounter("Female", _femaleCount, (count) {
                 setState(() {
                   _femaleCount = count;
+                  _validationMessage = null;
                 });
               }),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () {
+                  if (_selectedTreatment == null) {
+                    setState(() {
+                      _validationMessage = "Please choose a treatment.";
+                    });
+                    return;
+                  }
+
+                  if (_maleCount == 0 && _femaleCount == 0) {
+                    setState(() {
+                      _validationMessage = "Please add at least one patient.";
+                    });
+                    return;
+                  }
+
+                  widget.onSave(_selectedTreatment!, _maleCount, _femaleCount);
                   Navigator.of(context).pop();
                 },
                 style: ElevatedButton.styleFrom(
@@ -82,11 +136,11 @@ class _AddPatientsDialogState extends State<AddPatientsDialog> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
                 child: Text(
-                  "Save",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  widget.initialTreatmentName != null ? "Update" : "Save",
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
             ],
@@ -103,19 +157,19 @@ class _AddPatientsDialogState extends State<AddPatientsDialog> {
         Expanded(
           flex: 2,
           child: Container(
-            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
             decoration: BoxDecoration(
               color: Colors.grey[200],
               borderRadius: BorderRadius.circular(10.0),
             ),
             child: Text(
               gender,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
               textAlign: TextAlign.center,
             ),
           ),
         ),
-        SizedBox(width: 16),
+        const SizedBox(width: 16),
         Expanded(
           flex: 3,
           child: Row(
@@ -124,14 +178,14 @@ class _AddPatientsDialogState extends State<AddPatientsDialog> {
               FloatingActionButton(
                 mini: true,
                 backgroundColor: buttonPrimaryColor,
-                child: Icon(Icons.remove, color: Colors.white, size: 20),
+                child: const Icon(Icons.remove, color: Colors.white, size: 20),
                 onPressed: () {
                   if (count > 0) {
                     onCountChanged(count - 1);
                   }
                 },
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Container(
                 width: 40,
                 height: 40,
@@ -142,15 +196,15 @@ class _AddPatientsDialogState extends State<AddPatientsDialog> {
                 child: Center(
                   child: Text(
                     '$count',
-                    style: TextStyle(fontSize: 18),
+                    style: const TextStyle(fontSize: 18),
                   ),
                 ),
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               FloatingActionButton(
                 mini: true,
                 backgroundColor: buttonPrimaryColor,
-                child: Icon(Icons.add, color: Colors.white, size: 20),
+                child: const Icon(Icons.add, color: Colors.white, size: 20),
                 onPressed: () {
                   onCountChanged(count + 1);
                 },

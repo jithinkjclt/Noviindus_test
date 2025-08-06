@@ -74,7 +74,6 @@ class TreatmentTile extends StatelessWidget {
 
           const SizedBox(height: 12.0),
 
-          /// Gender Counts + Edit
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
