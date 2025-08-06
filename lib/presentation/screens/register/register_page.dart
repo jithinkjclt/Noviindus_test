@@ -324,9 +324,13 @@ class RegisterPage extends StatelessWidget {
                                         surface: Colors.white,
                                         onSurface: Colors.black,
                                       ),
-                                      iconTheme: IconThemeData(color: buttonPrimaryColor),
+                                      iconTheme: IconThemeData(
+                                        color: buttonPrimaryColor,
+                                      ),
                                       textButtonTheme: TextButtonThemeData(
-                                        style: TextButton.styleFrom(foregroundColor: buttonPrimaryColor),
+                                        style: TextButton.styleFrom(
+                                          foregroundColor: buttonPrimaryColor,
+                                        ),
                                       ),
                                     ),
                                     child: Scaffold(
@@ -334,21 +338,30 @@ class RegisterPage extends StatelessWidget {
                                         backgroundColor: Colors.white,
                                         elevation: 0,
                                         leading: IconButton(
-                                          icon: Icon(Icons.close, color: Colors.black),
+                                          icon: Icon(
+                                            Icons.close,
+                                            color: Colors.black,
+                                          ),
                                           onPressed: () {
                                             Navigator.of(context).pop();
                                           },
                                         ),
                                         actions: [
                                           IconButton(
-                                            icon: Icon(Icons.print, color: Colors.black),
+                                            icon: Icon(
+                                              Icons.print,
+                                              color: Colors.black,
+                                            ),
                                             onPressed: () async {
                                               await Printing.layoutPdf(
                                                 onLayout: (format) => generatePdf(
                                                   name: 'John Doe',
-                                                  whatsappNumber: '+91 9876543210',
-                                                  address: '123 Demo Street, Bangalore',
-                                                  bookedDate: '06/08/2025 at 10:30 AM',
+                                                  whatsappNumber:
+                                                      '+91 9876543210',
+                                                  address:
+                                                      '123 Demo Street, Bangalore',
+                                                  bookedDate:
+                                                      '06/08/2025 at 10:30 AM',
                                                   treatmentDate: '10/08/2025',
                                                   treatmentTime: '12:00 PM',
                                                   treatments: [
@@ -381,7 +394,7 @@ class RegisterPage extends StatelessWidget {
                                         canChangePageFormat: false,
                                         canChangeOrientation: false,
                                         canDebug: false,
-                                        allowPrinting: false, // hide built-in print button (we use custom)
+                                        allowPrinting: false,
                                         allowSharing: false,
                                         pdfPreviewPageDecoration: BoxDecoration(
                                           color: Colors.white,
