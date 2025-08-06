@@ -1,3 +1,4 @@
+// lib/cubit/register_state.dart
 
 part of 'register_cubit.dart';
 

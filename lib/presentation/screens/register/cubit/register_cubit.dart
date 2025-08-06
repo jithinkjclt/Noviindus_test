@@ -1,3 +1,5 @@
+// lib/cubit/register_cubit.dart
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
@@ -156,76 +158,123 @@ class RegisterCubit extends Cubit<RegisterState> {
     }
   }
 
-  void registor(BuildContext context) async {
+  Future<void> registor(BuildContext context) async {
+    print("registor function started.");
+    emit(RegisterLoading());
+    print("emitted RegisterLoading state.");
+    print("object");
     if (nameController.text.trim().isEmpty) {
+      print("nameController is empty. Emitting validation error.");
       emit(RegisterValidationError("Please enter a valid name."));
+      print("emitted RegisterValidationError. Returning from function.");
       return;
     }
+    print("nameController is valid.");
     if (whatsappController.text.trim().isEmpty) {
+      print("whatsappController is empty. Emitting validation error.");
       emit(RegisterValidationError("Please enter a valid WhatsApp number."));
+      print("emitted RegisterValidationError. Returning from function.");
       return;
     }
+    print("whatsappController is valid.");
     if (addressController.text.trim().isEmpty) {
+      print("addressController is empty. Emitting validation error.");
       emit(RegisterValidationError("Please enter a valid address."));
+      print("emitted RegisterValidationError. Returning from function.");
       return;
     }
+    print("addressController is valid.");
     if (branch == null) {
+      print("branch is null. Emitting validation error.");
       emit(RegisterValidationError("Please select a branch."));
+      print("emitted RegisterValidationError. Returning from function.");
       return;
     }
+    print("branch is valid.");
     if (selectedTreatments.isEmpty) {
+      print("selectedTreatments is empty. Emitting validation error.");
       emit(RegisterValidationError("Please add at least one treatment."));
+      print("emitted RegisterValidationError. Returning from function.");
       return;
     }
+    print("selectedTreatments is valid.");
     if (dateController.text.trim().isEmpty || hour == null || minutes == null) {
+      print("Date or time is missing. Emitting validation error.");
       emit(RegisterValidationError("Please select a valid date and time."));
+      print("emitted RegisterValidationError. Returning from function.");
       return;
     }
+    print("Date and time are valid.");
 
     final totalAmount = double.tryParse(totalAmountController.text.trim());
+    print("Parsed totalAmount: $totalAmount");
     if (totalAmount == null) {
+      print("totalAmount is null. Emitting validation error.");
       emit(RegisterValidationError("Please enter a valid total amount."));
+      print("emitted RegisterValidationError. Returning from function.");
       return;
     }
+    print("totalAmount is valid.");
     final discountAmount = double.tryParse(
       discountAmountController.text.trim(),
     );
+    print("Parsed discountAmount: $discountAmount");
     if (discountAmount == null) {
+      print("discountAmount is null. Emitting validation error.");
       emit(RegisterValidationError("Please enter a valid discount amount."));
+      print("emitted RegisterValidationError. Returning from function.");
       return;
     }
+    print("discountAmount is valid.");
     final advanceAmount = double.tryParse(advanceAmountController.text.trim());
+    print("Parsed advanceAmount: $advanceAmount");
     if (advanceAmount == null) {
+      print("advanceAmount is null. Emitting validation error.");
       emit(RegisterValidationError("Please enter a valid advance amount."));
+      print("emitted RegisterValidationError. Returning from function.");
       return;
     }
+    print("advanceAmount is valid.");
     final balanceAmount = double.tryParse(balanceAmountController.text.trim());
+    print("Parsed balanceAmount: $balanceAmount");
     if (balanceAmount == null) {
+      print("balanceAmount is null. Emitting validation error.");
       emit(RegisterValidationError("Please enter a valid balance amount."));
+      print("emitted RegisterValidationError. Returning from function.");
       return;
     }
-
-    emit(RegisterLoading());
+    print("balanceAmount is valid. All validations passed.");
 
     try {
+      print("Starting try block for API call.");
       final List<String> maleTreatmentIds = [];
+      print("Initialized maleTreatmentIds list.");
       final List<String> femaleTreatmentIds = [];
+      print("Initialized femaleTreatmentIds list.");
       final Set<String> allTreatmentIds = {};
+      print("Initialized allTreatmentIds set.");
 
       for (var treatment in selectedTreatments) {
+        print("Processing treatment: ${treatment['title']}");
         if (treatment['maleCount'] > 0) {
+          print("  - Adding male treatment ID: ${treatment['id']}");
           maleTreatmentIds.add(treatment['id'].toString());
         }
         if (treatment['femaleCount'] > 0) {
+          print("  - Adding female treatment ID: ${treatment['id']}");
           femaleTreatmentIds.add(treatment['id'].toString());
         }
+        print("  - Adding all treatment ID: ${treatment['id']}");
         allTreatmentIds.add(treatment['id'].toString());
       }
+      print("Finished processing all selected treatments.");
 
-      // ✅ Corrected date-time format as per API contract
-      final date = DateFormat('dd/MM/yyyy').parse(dateController.text.trim());
+      final date = DateFormat('yyyy-MM-dd').parse(dateController.text.trim());
+      print("Parsed date: $date");
       final timeHour = int.tryParse(hour ?? '0') ?? 0;
+      print("Parsed hour: $timeHour");
       final timeMinute = int.tryParse(minutes ?? '0') ?? 0;
+      print("Parsed minutes: $timeMinute");
       final selectedDateTime = DateTime(
         date.year,
         date.month,
@@ -233,14 +282,15 @@ class RegisterCubit extends Cubit<RegisterState> {
         timeHour,
         timeMinute,
       );
+      print("Constructed selectedDateTime: $selectedDateTime");
       final String formattedDateTime = DateFormat(
         'dd/MM/yyyy-hh:mm a',
       ).format(selectedDateTime);
+      print("Formatted date and time: $formattedDateTime");
 
       final body = {
         "id": "",
         "name": nameController.text.trim(),
-        "excecutive": "Anjali R",
         "payment": paymentMethod,
         "phone": whatsappController.text.trim(),
         "address": addressController.text.trim(),
@@ -254,23 +304,32 @@ class RegisterCubit extends Cubit<RegisterState> {
         "branch": branch ?? "",
         "treatments": allTreatmentIds.join(","),
       };
+      print("Created API request body.");
 
       print("Register API Request Body: $body");
-
+      print("Making API call with context: $context");
       final response = await ApiService.post(
         context: context,
         endpoint: "PatientUpdate",
         body: body,
       );
+      print("API call returned. Response: $response");
 
       if (response['statusCode'] == 200) {
+        print("API call was successful (status code 200).");
         emit(RegisterSuccess());
+        print("emitted RegisterSuccess state.");
       } else {
+        print("API call failed (status code was not 200).");
         final error = response['error'] ?? 'Registration failed';
         emit(RegisterError(error));
+        print("emitted RegisterError state with message: $error");
       }
     } catch (e) {
+      print("Caught an exception in the try block: $e");
       emit(RegisterError("Something went wrong."));
+      print("emitted RegisterError state due to exception.");
     }
+    print("registor function finished execution.");
   }
 }

@@ -7,10 +7,7 @@ import 'package:noviindus_test/presentation/screens/register/widget/payment_sele
 import 'package:noviindus_test/presentation/screens/register/widget/treatment_add.dart';
 import 'package:noviindus_test/presentation/screens/register/widget/treatment_tile.dart';
 import 'package:noviindus_test/presentation/widget/custom_text.dart';
-import 'package:noviindus_test/presentation/widget/page_navigation.dart';
-import 'package:noviindus_test/presentation/widget/pdf_preview_widget.dart';
 import 'package:noviindus_test/presentation/widget/spacing_extensions.dart';
-import 'package:printing/printing.dart';
 import '../../../core/constants/colors.dart';
 import '../../widget/custom_appbar.dart';
 import '../../widget/custom_button.dart';
@@ -30,27 +27,26 @@ class RegisterPage extends StatelessWidget {
         create: (context) => RegisterCubit()
           ..getTreatment(context)
           ..getBranches(context),
-        child: Builder(
-          builder: (builderContext) { // Use a new context provided by the Builder
-            return BlocConsumer<RegisterCubit, RegisterState>(
-              listener: (context, state) {
-                if (state is RegisterSuccess) {
-                  ShowCustomSnackbar.success(
-                    context,
-                    message: "Patient registered successfully.",
-                  );
-                } else if (state is RegisterError) {
-                  ShowCustomSnackbar.error(context, message: state.message);
-                } else if (state is RegisterValidationError) {
-                  ShowCustomSnackbar.error(context, message: state.message);
-                }
-              },
-              builder: (context, state) {
-                final cubit = context.read<RegisterCubit>();
+        child: BlocConsumer<RegisterCubit, RegisterState>(
+          listener: (context, state) {
+            if (state is RegisterSuccess) {
+              ShowCustomSnackbar.success(
+                context,
+                message: "Patient registered successfully.",
+              );
+            } else if (state is RegisterError) {
+              ShowCustomSnackbar.error(context, message: state.message);
+            } else if (state is RegisterValidationError) {
+              ShowCustomSnackbar.error(context, message: state.message);
+            }
+          },
+          builder: (context, state) {
+            final cubit = context.read<RegisterCubit>();
+            final selectedTreatments = cubit.selectedTreatments;
 
-                final selectedTreatments = cubit.selectedTreatments;
-
-                return SingleChildScrollView(
+            return Stack(
+              children: [
+                SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -114,7 +110,8 @@ class RegisterPage extends StatelessWidget {
                               boxname: 'Branch',
                               hintText: 'Choose your Branch',
                               items: cubit.allBranches,
-                              itemAsString: (Map<String, dynamic> branch) => branch['name'] as String,
+                              itemAsString: (Map<String, dynamic> branch) =>
+                              branch['name'] as String,
                               onItemSelected: (Map<String, dynamic>? selectedBranch) {
                                 if (selectedBranch != null) {
                                   cubit.updateBranch(selectedBranch['id'].toString());
@@ -240,7 +237,7 @@ class RegisterPage extends StatelessWidget {
                             CustomTextField(
                               controller: cubit.dateController,
                               boxname: "Select Date",
-                              hintText: "yyyy-MM-dd",
+                              hintText: "dd/MM/yyyy",
                               showCalendar: true,
                               onChanged: (value) {},
                             ),
@@ -277,9 +274,9 @@ class RegisterPage extends StatelessWidget {
                                   hintText: 'Minutes',
                                   items: List.generate(
                                     60,
-                                        (index) => (index + 1).toString().padLeft(2, '0'),
+                                        (index) => index.toString().padLeft(2, '0'),
                                   ),
-                                  itemAsString: (String location) => location,
+                                  itemAsString: (String minutes) => minutes,
                                   onItemSelected: (String? selectedMinutes) {
                                     if (selectedMinutes != null) {
                                       cubit.updateMinutes(selectedMinutes);
@@ -313,8 +310,9 @@ class RegisterPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                );
-              },
+                ),
+
+              ],
             );
           },
         ),
