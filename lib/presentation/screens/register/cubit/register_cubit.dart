@@ -1,5 +1,3 @@
-// lib/cubit/register_cubit.dart
-
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';

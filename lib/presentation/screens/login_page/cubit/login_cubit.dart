@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 
 import 'package:noviindus_test/core/constants/variables.dart';
 import 'package:noviindus_test/data/datasources/api_service.dart';
-import 'package:noviindus_test/data/models/login_response_model.dart'; // Import the model
+import 'package:noviindus_test/data/models/login_response_model.dart';
 import '../../../widget/custome_snackbar.dart';
 
 part 'login_state.dart';

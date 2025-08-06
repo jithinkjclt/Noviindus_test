@@ -7,13 +7,16 @@ import 'package:noviindus_test/presentation/screens/register/widget/payment_sele
 import 'package:noviindus_test/presentation/screens/register/widget/treatment_add.dart';
 import 'package:noviindus_test/presentation/screens/register/widget/treatment_tile.dart';
 import 'package:noviindus_test/presentation/widget/custom_text.dart';
+import 'package:noviindus_test/presentation/widget/page_navigation.dart';
 import 'package:noviindus_test/presentation/widget/spacing_extensions.dart';
+import 'package:printing/printing.dart';
 import '../../../core/constants/colors.dart';
 import '../../widget/custom_appbar.dart';
 import '../../widget/custom_button.dart';
 import '../../widget/custom_dropdown.dart';
 import '../../widget/custome_snackbar.dart';
 import '../../widget/customtextfield.dart';
+import '../../widget/pdf_preview_widget.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
@@ -111,12 +114,15 @@ class RegisterPage extends StatelessWidget {
                               hintText: 'Choose your Branch',
                               items: cubit.allBranches,
                               itemAsString: (Map<String, dynamic> branch) =>
-                              branch['name'] as String,
-                              onItemSelected: (Map<String, dynamic>? selectedBranch) {
-                                if (selectedBranch != null) {
-                                  cubit.updateBranch(selectedBranch['id'].toString());
-                                }
-                              },
+                                  branch['name'] as String,
+                              onItemSelected:
+                                  (Map<String, dynamic>? selectedBranch) {
+                                    if (selectedBranch != null) {
+                                      cubit.updateBranch(
+                                        selectedBranch['id'].toString(),
+                                      );
+                                    }
+                                  },
                               fillColor: textFieldFillColor,
                               borderColor: textFormBorder,
                               hintTextColor: textFormGrey,
@@ -141,17 +147,25 @@ class RegisterPage extends StatelessWidget {
                                         builder: (BuildContext context) {
                                           return AddPatientsDialog(
                                             treatments: cubit.allTreatments,
-                                            initialTreatmentName: treatment['title'],
-                                            initialMaleCount: treatment['maleCount'],
-                                            initialFemaleCount: treatment['femaleCount'],
-                                            onSave: (treatmentName, maleCount, femaleCount) {
-                                              cubit.updateTreatment(
-                                                index,
-                                                treatmentName,
-                                                maleCount,
-                                                femaleCount,
-                                              );
-                                            },
+                                            initialTreatmentName:
+                                                treatment['title'],
+                                            initialMaleCount:
+                                                treatment['maleCount'],
+                                            initialFemaleCount:
+                                                treatment['femaleCount'],
+                                            onSave:
+                                                (
+                                                  treatmentName,
+                                                  maleCount,
+                                                  femaleCount,
+                                                ) {
+                                                  cubit.updateTreatment(
+                                                    index,
+                                                    treatmentName,
+                                                    maleCount,
+                                                    femaleCount,
+                                                  );
+                                                },
                                           );
                                         },
                                       );
@@ -172,13 +186,18 @@ class RegisterPage extends StatelessWidget {
                                   builder: (BuildContext context) {
                                     return AddPatientsDialog(
                                       treatments: cubit.allTreatments,
-                                      onSave: (treatmentName, maleCount, femaleCount) {
-                                        cubit.addTreatment(
-                                          treatmentName,
-                                          maleCount,
-                                          femaleCount,
-                                        );
-                                      },
+                                      onSave:
+                                          (
+                                            treatmentName,
+                                            maleCount,
+                                            femaleCount,
+                                          ) {
+                                            cubit.addTreatment(
+                                              treatmentName,
+                                              maleCount,
+                                              femaleCount,
+                                            );
+                                          },
                                     );
                                   },
                                 );
@@ -252,11 +271,13 @@ class RegisterPage extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 CustomDropdownField<String>(
-                                  width: MediaQuery.of(context).size.width / 2.3,
+                                  width:
+                                      MediaQuery.of(context).size.width / 2.3,
                                   hintText: 'Hour',
                                   items: List.generate(
                                     12,
-                                        (index) => (index + 1).toString().padLeft(2, '0'),
+                                    (index) =>
+                                        (index + 1).toString().padLeft(2, '0'),
                                   ),
                                   itemAsString: (String hour) => hour,
                                   onItemSelected: (String? selectedHour) {
@@ -274,7 +295,7 @@ class RegisterPage extends StatelessWidget {
                                   hintText: 'Minutes',
                                   items: List.generate(
                                     60,
-                                        (index) => index.toString().padLeft(2, '0'),
+                                    (index) => index.toString().padLeft(2, '0'),
                                   ),
                                   itemAsString: (String minutes) => minutes,
                                   onItemSelected: (String? selectedMinutes) {
@@ -292,8 +313,111 @@ class RegisterPage extends StatelessWidget {
                             50.hBox,
                             CustomButton(
                               iconSize: 18,
-                              onTap: () async {
-                                cubit.registor(context);
+                              onTap: () {
+                                Screen.open(
+                                  context,
+                                  Theme(
+                                    data: Theme.of(context).copyWith(
+                                      colorScheme: ColorScheme.light(
+                                        primary: buttonPrimaryColor,
+                                        onPrimary: colorWhite,
+                                        surface: Colors.white,
+                                        onSurface: Colors.black,
+                                      ),
+                                      iconTheme: IconThemeData(color: buttonPrimaryColor),
+                                      textButtonTheme: TextButtonThemeData(
+                                        style: TextButton.styleFrom(foregroundColor: buttonPrimaryColor),
+                                      ),
+                                    ),
+                                    child: Scaffold(
+                                      appBar: AppBar(
+                                        backgroundColor: Colors.white,
+                                        elevation: 0,
+                                        leading: IconButton(
+                                          icon: Icon(Icons.close, color: Colors.black),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                        actions: [
+                                          IconButton(
+                                            icon: Icon(Icons.print, color: Colors.black),
+                                            onPressed: () async {
+                                              await Printing.layoutPdf(
+                                                onLayout: (format) => generatePdf(
+                                                  name: 'John Doe',
+                                                  whatsappNumber: '+91 9876543210',
+                                                  address: '123 Demo Street, Bangalore',
+                                                  bookedDate: '06/08/2025 at 10:30 AM',
+                                                  treatmentDate: '10/08/2025',
+                                                  treatmentTime: '12:00 PM',
+                                                  treatments: [
+                                                    {
+                                                      'name': 'Panchakarma',
+                                                      'price': '₹300',
+                                                      'male': '2',
+                                                      'female': '1',
+                                                      'total': '₹900',
+                                                    },
+                                                    {
+                                                      'name': 'Abhyanga',
+                                                      'price': '₹500',
+                                                      'male': '1',
+                                                      'female': '0',
+                                                      'total': '₹500',
+                                                    },
+                                                  ],
+                                                  totalAmount: '₹1400',
+                                                  discount: '₹200',
+                                                  advance: '₹500',
+                                                  balance: '₹700',
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                      body: PdfPreview(
+                                        canChangePageFormat: false,
+                                        canChangeOrientation: false,
+                                        canDebug: false,
+                                        allowPrinting: false, // hide built-in print button (we use custom)
+                                        allowSharing: false,
+                                        pdfPreviewPageDecoration: BoxDecoration(
+                                          color: Colors.white,
+                                        ),
+                                        build: (format) => generatePdf(
+                                          name: 'John Doe',
+                                          whatsappNumber: '+91 9876543210',
+                                          address: '123 Demo Street, Bangalore',
+                                          bookedDate: '06/08/2025 at 10:30 AM',
+                                          treatmentDate: '10/08/2025',
+                                          treatmentTime: '12:00 PM',
+                                          treatments: [
+                                            {
+                                              'name': 'Panchakarma',
+                                              'price': '₹300',
+                                              'male': '2',
+                                              'female': '1',
+                                              'total': '₹900',
+                                            },
+                                            {
+                                              'name': 'Abhyanga',
+                                              'price': '₹500',
+                                              'male': '1',
+                                              'female': '0',
+                                              'total': '₹500',
+                                            },
+                                          ],
+                                          totalAmount: '₹1400',
+                                          discount: '₹200',
+                                          advance: '₹500',
+                                          balance: '₹700',
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
                               },
                               fontSize: 15,
                               weight: FontWeight.w500,
@@ -311,7 +435,6 @@ class RegisterPage extends StatelessWidget {
                     ],
                   ),
                 ),
-
               ],
             );
           },

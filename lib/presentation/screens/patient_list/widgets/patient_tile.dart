@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:noviindus_test/presentation/screens/register/register_page.dart';
-import 'package:noviindus_test/presentation/widget/page_navigation.dart';
 import 'package:noviindus_test/presentation/widget/spacing_extensions.dart';
-
 import '../../../../core/constants/colors.dart';
 import '../../../widget/custom_text.dart';
 
@@ -41,11 +38,11 @@ class PatientListTile extends StatelessWidget {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(14.0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppText('$patientNumber.', weight: FontWeight.w500, size: 18),
+                AppText('$patientNumber.', weight: FontWeight.w600, size: 18),
                 10.wBox,
                 Expanded(
                   child: Column(
@@ -53,63 +50,43 @@ class PatientListTile extends StatelessWidget {
                     children: [
                       AppText(
                         patientName.isNotEmpty ? patientName : 'Unknown',
-                        weight: FontWeight.w500,
-                        size: 18,
+                        weight: FontWeight.w600,
+                        size: 16,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      8.hBox,
+                      4.hBox,
                       AppText(
                         packageName.isNotEmpty ? packageName : 'N/A',
                         color: buttonPrimaryColor,
                         size: 14,
-                        weight: FontWeight.w400,
+                        weight: FontWeight.w500,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      8.hBox,
-                      Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        spacing: 16.0,
-                        runSpacing: 8.0,
+                      10.hBox,
+                      Row(
                         children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(
-                                Icons.calendar_today,
-                                size: 13.0,
-                                color: redColor,
-                              ),
-                              4.wBox,
-                              AppText(
-                                bookingDate.isNotEmpty ? bookingDate : 'N/A',
-                                color: Colors.grey,
-                                size: 15,
-                                weight: FontWeight.w400,
-                              ),
-                            ],
+                          const Icon(
+                            Icons.calendar_today,
+                            size: 14,
+                            color: redColor,
                           ),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(
-                                Icons.person,
-                                size: 13.0,
-                                color: redColor,
-                              ),
-                              4.wBox,
-                              AppText(
-                                assignedTo.isNotEmpty
-                                    ? assignedTo
-                                    : 'Unassigned',
-                                color: Colors.grey,
-                                size: 15,
-                                weight: FontWeight.w400,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
+                          4.wBox,
+                          AppText(
+                            bookingDate,
+                            color: Colors.grey,
+                            size: 13,
+                            weight: FontWeight.w400,
+                          ),
+                          16.wBox,
+                          const Icon(Icons.person, size: 14, color: redColor),
+                          4.wBox,
+                          AppText(
+                            assignedTo,
+                            color: Colors.grey,
+                            size: 13,
+                            weight: FontWeight.w400,
                           ),
                         ],
                       ),
@@ -119,34 +96,26 @@ class PatientListTile extends StatelessWidget {
               ],
             ),
           ),
-
-          const Divider(
-            color: Colors.grey,
-            height: 1,
-            indent: 16.0,
-            endIndent: 16.0,
-          ),
-
-          // Bottom row
+          const Divider(height: 1, color: Color(0xFFE0E0E0)),
           InkWell(
             onTap: () {},
             child: Padding(
               padding: const EdgeInsets.symmetric(
-                horizontal: 25.0,
-                vertical: 16,
+                horizontal: 16.0,
+                vertical: 12.0,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   AppText(
                     'View Booking details',
-                    color: Colors.black,
+                    color: Colors.black87,
                     size: 14,
-                    weight: FontWeight.w300,
+                    weight: FontWeight.w400,
                   ),
                   const Icon(
-                    Icons.arrow_forward_ios_sharp,
-                    size: 20.0,
+                    Icons.arrow_forward_ios,
+                    size: 18,
                     color: iconGreenColor,
                   ),
                 ],
