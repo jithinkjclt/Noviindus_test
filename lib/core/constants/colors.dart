@@ -6,6 +6,7 @@ const Color redColor = Color(0xFFF24E1E);
 const Color buttonPrimaryColor = Color(0xFF006837);
 const Color buttonSecondaryColor = Color(0xFFC4E1C9);
 
+const Color tileFillColor = Color(0xFFF0F0F0);
 const Color colorBlack = Color(0xFF000000);
 const Color textSecondaryColor = Color(0xFF404040);
 const Color textBlueColor = Color(0xFF0028FC);
