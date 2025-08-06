@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:noviindus_test/presentation/screens/register/register_page.dart';
+import 'package:noviindus_test/presentation/widget/page_navigation.dart';
 import 'package:noviindus_test/presentation/widget/spacing_extensions.dart';
 
 import '../../../../core/constants/colors.dart';
@@ -43,11 +45,7 @@ class PatientListTile extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppText(
-                  '$patientNumber.',
-                  weight: FontWeight.w500,
-                  size: 18,
-                ),
+                AppText('$patientNumber.', weight: FontWeight.w500, size: 18),
                 10.wBox,
                 Expanded(
                   child: Column(
@@ -78,13 +76,14 @@ class PatientListTile extends StatelessWidget {
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(Icons.calendar_today,
-                                  size: 13.0, color: redColor),
+                              const Icon(
+                                Icons.calendar_today,
+                                size: 13.0,
+                                color: redColor,
+                              ),
                               4.wBox,
                               AppText(
-                                bookingDate.isNotEmpty
-                                    ? bookingDate
-                                    : 'N/A',
+                                bookingDate.isNotEmpty ? bookingDate : 'N/A',
                                 color: Colors.grey,
                                 size: 15,
                                 weight: FontWeight.w400,
@@ -94,8 +93,11 @@ class PatientListTile extends StatelessWidget {
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(Icons.person,
-                                  size: 13.0, color: redColor),
+                              const Icon(
+                                Icons.person,
+                                size: 13.0,
+                                color: redColor,
+                              ),
                               4.wBox,
                               AppText(
                                 assignedTo.isNotEmpty
@@ -127,12 +129,12 @@ class PatientListTile extends StatelessWidget {
 
           // Bottom row
           InkWell(
-            onTap: () {
-              // Optional: handle view booking details tap
-            },
+            onTap: () {},
             child: Padding(
               padding: const EdgeInsets.symmetric(
-                  horizontal: 25.0, vertical: 16),
+                horizontal: 25.0,
+                vertical: 16,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

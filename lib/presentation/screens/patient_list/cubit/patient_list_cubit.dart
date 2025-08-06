@@ -1,8 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
-
-import 'package:noviindus_test/core/constants/api_endpoints.dart';
 import 'package:noviindus_test/core/constants/variables.dart';
 import '../../../../data/datasources/api_service.dart';
 import '../../../../data/models/patient_list_model.dart';
@@ -36,7 +34,8 @@ class PatientListCubit extends Cubit<PatientListState> {
         }
       } else {
         final errorMessage =
-            response['error'] ?? 'Something went wrong while fetching patient data.';
+            response['error'] ??
+            'Something went wrong while fetching patient data.';
         emit(PatientListFailure(errorMessage));
         ShowCustomSnackbar.error(context, message: errorMessage);
       }

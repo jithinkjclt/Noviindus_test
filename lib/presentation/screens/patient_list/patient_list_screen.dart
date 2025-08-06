@@ -10,6 +10,9 @@ import 'package:noviindus_test/presentation/widget/custom_text.dart';
 import 'package:noviindus_test/presentation/widget/customtextfield.dart';
 import 'package:noviindus_test/presentation/widget/spacing_extensions.dart';
 
+import '../../widget/page_navigation.dart';
+import '../register/register_page.dart';
+
 class PatientListScreen extends StatelessWidget {
   const PatientListScreen({super.key});
 
@@ -31,6 +34,7 @@ class PatientListScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CustomTextField(
+
                         width: context.deviceSize.width / 1.5,
                         hintText: 'Search for treatments',
                         hintTextWeight: FontWeight.w400,
@@ -149,7 +153,9 @@ class PatientListScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: CustomButton(
-                onTap: () {},
+                onTap: () {
+                  Screen.open(context, RegisterPage());
+                },
                 fontSize: 17,
                 weight: FontWeight.w600,
                 text: "Register Now",

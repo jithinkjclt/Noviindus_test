@@ -9,9 +9,13 @@ class AddPatientsDialog extends StatefulWidget {
   final int? initialMaleCount;
   final int? initialFemaleCount;
 
+  // This property now accepts a List of Maps
+  final List<Map<String, dynamic>> treatments;
+
   const AddPatientsDialog({
     super.key,
     required this.onSave,
+    required this.treatments,
     this.initialTreatmentName,
     this.initialMaleCount,
     this.initialFemaleCount,
@@ -24,21 +28,20 @@ class AddPatientsDialog extends StatefulWidget {
 class _AddPatientsDialogState extends State<AddPatientsDialog> {
   int _maleCount = 0;
   int _femaleCount = 0;
-  String? _selectedTreatment;
-  String? _validationMessage;
 
-  final List<String> _treatments = const [
-    'Couple Combo Package',
-    'Abhyanga',
-    'Panchakarma',
-    'Shirodhara',
-  ];
+  // This variable now stores the full selected treatment map
+  Map<String, dynamic>? _selectedTreatment;
+  String? _validationMessage;
 
   @override
   void initState() {
     super.initState();
     if (widget.initialTreatmentName != null) {
-      _selectedTreatment = widget.initialTreatmentName;
+      // Find the map that corresponds to the initial name
+      _selectedTreatment = widget.treatments.firstWhere(
+        (t) => t['name'] == widget.initialTreatmentName,
+        orElse: () => null!,
+      );
       _maleCount = widget.initialMaleCount ?? 0;
       _femaleCount = widget.initialFemaleCount ?? 0;
     }
@@ -49,9 +52,7 @@ class _AddPatientsDialogState extends State<AddPatientsDialog> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.0),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       elevation: 0,
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
@@ -66,12 +67,17 @@ class _AddPatientsDialogState extends State<AddPatientsDialog> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              CustomDropdownField<String>(
+              CustomDropdownField<Map<String, dynamic>>(
+                // The generic type is now Map<String, dynamic>
                 boxname: 'Choose Treatment',
-                hintText: _selectedTreatment ?? 'Choose preferred treatment',
-                items: _treatments,
-                itemAsString: (String treatment) => treatment,
-                onItemSelected: (String? selectedTreatment) {
+                // Display the name from the selected map, or a default hint
+                hintText: _selectedTreatment != null
+                    ? _selectedTreatment!['name'] as String
+                    : 'Choose preferred treatment',
+                items: widget.treatments,
+                itemAsString: (Map<String, dynamic> treatment) =>
+                    treatment['name'] as String,
+                onItemSelected: (Map<String, dynamic>? selectedTreatment) {
                   setState(() {
                     _selectedTreatment = selectedTreatment;
                     _validationMessage = null;
@@ -91,10 +97,7 @@ class _AddPatientsDialogState extends State<AddPatientsDialog> {
               const SizedBox(height: 14),
               const Text(
                 "Add Patients",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
               _buildPatientCounter("Male", _maleCount, (count) {
@@ -127,7 +130,12 @@ class _AddPatientsDialogState extends State<AddPatientsDialog> {
                     return;
                   }
 
-                  widget.onSave(_selectedTreatment!, _maleCount, _femaleCount);
+                  // Pass the treatment name from the selected map to the onSave callback
+                  widget.onSave(
+                    _selectedTreatment!['name'] as String,
+                    _maleCount,
+                    _femaleCount,
+                  );
                   Navigator.of(context).pop();
                 },
                 style: ElevatedButton.styleFrom(
@@ -140,7 +148,10 @@ class _AddPatientsDialogState extends State<AddPatientsDialog> {
                 ),
                 child: Text(
                   widget.initialTreatmentName != null ? "Update" : "Save",
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],
@@ -150,7 +161,11 @@ class _AddPatientsDialogState extends State<AddPatientsDialog> {
     );
   }
 
-  Widget _buildPatientCounter(String gender, int count, Function(int) onCountChanged) {
+  Widget _buildPatientCounter(
+    String gender,
+    int count,
+    Function(int) onCountChanged,
+  ) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -194,10 +209,7 @@ class _AddPatientsDialogState extends State<AddPatientsDialog> {
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Center(
-                  child: Text(
-                    '$count',
-                    style: const TextStyle(fontSize: 18),
-                  ),
+                  child: Text('$count', style: const TextStyle(fontSize: 18)),
                 ),
               ),
               const SizedBox(width: 8),
