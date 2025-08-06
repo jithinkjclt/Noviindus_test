@@ -201,12 +201,37 @@ class RegisterPage extends StatelessWidget {
                   CustomButton(
                     iconSize: 18,
                     onTap: () async {
-                      // Navigate to a new screen that shows the PDF preview
-                      Navigator.push(
+                      Screen.open(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              PdfPreview(build: (format) => generatePdf()),
+                        PdfPreview(
+                          build: (format) => generatePdf(
+                            name: 'John Doe',
+                            whatsappNumber: '+91 9876543210',
+                            address: '123 Demo Street, Bangalore',
+                            bookedDate: '06/08/2025 at 10:30 AM',
+                            treatmentDate: '10/08/2025',
+                            treatmentTime: '12:00 PM',
+                            treatments: [
+                              {
+                                'name': 'Panchakarma',
+                                'price': '₹300',
+                                'male': '2',
+                                'female': '1',
+                                'total': '₹900',
+                              },
+                              {
+                                'name': 'Abhyanga',
+                                'price': '₹500',
+                                'male': '1',
+                                'female': '0',
+                                'total': '₹500',
+                              },
+                            ],
+                            totalAmount: '₹1400',
+                            discount: '₹200',
+                            advance: '₹500',
+                            balance: '₹700',
+                          ),
                         ),
                       );
                     },

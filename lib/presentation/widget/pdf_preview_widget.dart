@@ -3,7 +3,19 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
-Future<Uint8List> generatePdf() async {
+Future<Uint8List> generatePdf({
+  required String name,
+  required String whatsappNumber,
+  required String address,
+  required String bookedDate,
+  required String treatmentDate,
+  required String treatmentTime,
+  required List<Map<String, dynamic>> treatments,
+  required String totalAmount,
+  required String discount,
+  required String advance,
+  required String balance,
+}) async {
   final pdf = pw.Document();
 
   final logoImage = await rootBundle.load('assets/logo.png');
@@ -72,19 +84,6 @@ Future<Uint8List> generatePdf() async {
     );
   }
 
-  final name = "Salih T";
-  final whatsappNumber = "+91 987654321";
-  final address = "Nadakkave, Kozhikkode";
-  final bookedDate = "31/01/2024 at 12:12pm";
-  final treatmentDate = "21/02/2024";
-  final treatmentTime = "11:00 am";
-
-  final treatments = [
-    {'name': 'Panchakarma', 'price': '₹230', 'male': '4', 'female': '4', 'total': '₹2,540'},
-    {'name': 'Njavara Kizhi Treatment', 'price': '₹230', 'male': '4', 'female': '4', 'total': '₹2,540'},
-    {'name': 'Panchakarma', 'price': '₹230', 'male': '4', 'female': '6', 'total': '₹2,540'},
-  ];
-
   pdf.addPage(
     pw.Page(
       pageFormat: PdfPageFormat.a4,
@@ -151,15 +150,15 @@ Future<Uint8List> generatePdf() async {
                     child: pw.Column(
                       crossAxisAlignment: pw.CrossAxisAlignment.stretch,
                       children: [
-                        _buildSummaryRow('Total Amount', '₹7,620', boldBlack, regularText),
+                        _buildSummaryRow('Total Amount', totalAmount, boldBlack, regularText),
                         pw.SizedBox(height: 5),
-                        _buildSummaryRow('Discount', '₹500', regularText, regularText),
+                        _buildSummaryRow('Discount', discount, regularText, regularText),
                         pw.SizedBox(height: 5),
-                        _buildSummaryRow('Advance', '₹1,200', regularText, regularText),
+                        _buildSummaryRow('Advance', advance, regularText, regularText),
                         pw.SizedBox(height: 10),
                         buildDashedDivider(),
                         pw.SizedBox(height: 10),
-                        _buildSummaryRow('Balance', '₹5,920', boldBlack, boldBlack.copyWith(fontSize: 11)),
+                        _buildSummaryRow('Balance', balance, boldBlack, boldBlack.copyWith(fontSize: 11)),
                       ],
                     ),
                   ),
