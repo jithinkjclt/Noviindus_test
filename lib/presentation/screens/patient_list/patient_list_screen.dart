@@ -20,7 +20,7 @@ class PatientListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: const CustomAppBar(),
+      appBar: const CustomAppBar(isBack: false),
       backgroundColor: colorWhite,
       body: BlocProvider(
         create: (context) => PatientListCubit()..getPatients(context),

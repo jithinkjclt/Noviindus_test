@@ -95,7 +95,7 @@ class LoginPage extends StatelessWidget {
 
                             final isSuccess = await cubit.login(context);
                             if (isSuccess) {
-                              Screen.open(
+                              Screen.openAsNewPage(
                                 context,
                                 PatientListScreen(),
                                 isAnimate: true,

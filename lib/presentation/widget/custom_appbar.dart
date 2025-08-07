@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:noviindus_test/core/constants/colors.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppBar({
-    super.key,
-  });
+  final bool isBack;
+
+  const CustomAppBar({super.key, this.isBack = true});
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: Colors.black),
-        onPressed: () {
-          Navigator.of(context).pop();
-        },
-      ),
+      leading: isBack
+          ? IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.black),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            )
+          : null,
       title: null,
       backgroundColor: Colors.white,
       elevation: 0,
@@ -41,10 +42,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   color: Colors.red,
                   borderRadius: BorderRadius.circular(6),
                 ),
-                constraints: const BoxConstraints(
-                  minWidth: 10,
-                  minHeight: 10,
-                ),
+                constraints: const BoxConstraints(minWidth: 10, minHeight: 10),
               ),
             ),
           ],

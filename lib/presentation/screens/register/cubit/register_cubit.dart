@@ -1,11 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/constants/variables.dart';
 import '../../../../data/datasources/api_service.dart';
 import 'package:meta/meta.dart';
+
 part 'register_state.dart';
+
 class RegisterCubit extends Cubit<RegisterState> {
   RegisterCubit() : super(RegisterInitial());
   List<Map<String, dynamic>> allTreatments = [];
@@ -15,7 +16,8 @@ class RegisterCubit extends Cubit<RegisterState> {
   final TextEditingController whatsappController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController totalAmountController = TextEditingController();
-  final TextEditingController discountAmountController = TextEditingController();
+  final TextEditingController discountAmountController =
+      TextEditingController();
   final TextEditingController advanceAmountController = TextEditingController();
   final TextEditingController balanceAmountController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
@@ -24,9 +26,10 @@ class RegisterCubit extends Cubit<RegisterState> {
   String? hour;
   String? minutes;
   String paymentMethod = "Cash";
+
   void addTreatment(String treatmentName, int maleCount, int femaleCount) {
     final treatment = allTreatments.firstWhere(
-          (t) => t['name'] == treatmentName,
+      (t) => t['name'] == treatmentName,
       orElse: () => {},
     );
     if (treatment.isNotEmpty) {
@@ -40,12 +43,13 @@ class RegisterCubit extends Cubit<RegisterState> {
       emit(RegisterInitial());
     }
   }
+
   void updateTreatment(
-      int index,
-      String treatmentName,
-      int maleCount,
-      int femaleCount,
-      ) {
+    int index,
+    String treatmentName,
+    int maleCount,
+    int femaleCount,
+  ) {
     if (index >= 0 && index < selectedTreatments.length) {
       selectedTreatments[index] = {
         'id': selectedTreatments[index]['id'],
@@ -56,32 +60,39 @@ class RegisterCubit extends Cubit<RegisterState> {
       emit(RegisterInitial());
     }
   }
+
   void removeTreatment(int index) {
     if (index >= 0 && index < selectedTreatments.length) {
       selectedTreatments.removeAt(index);
       emit(RegisterInitial());
     }
   }
+
   void updateLocation(String? newLocation) {
     location = newLocation;
     emit(RegisterInitial());
   }
+
   void updateBranch(String? newBranch) {
     branch = newBranch;
     emit(RegisterInitial());
   }
+
   void updateHour(String? newHour) {
     hour = newHour;
     emit(RegisterInitial());
   }
+
   void updateMinutes(String? newMinutes) {
     minutes = newMinutes;
     emit(RegisterInitial());
   }
+
   void updatePaymentMethod(String method) {
     paymentMethod = method;
     emit(RegisterInitial());
   }
+
   Future<void> getTreatment(BuildContext context) async {
     emit(RegisterLoading());
     const String endpoint = "TreatmentList";
@@ -107,6 +118,7 @@ class RegisterCubit extends Cubit<RegisterState> {
       emit(RegisterError("Failed to fetch data."));
     }
   }
+
   Future<void> getBranches(BuildContext context) async {
     const String endpoint = "BranchList";
     final response = await ApiService.get(
@@ -131,6 +143,7 @@ class RegisterCubit extends Cubit<RegisterState> {
       emit(RegisterError("Failed to fetch data."));
     }
   }
+
   Future<Map<String, dynamic>> registor(BuildContext context) async {
     emit(RegisterLoading());
     if (nameController.text.trim().isEmpty) {
