@@ -1,4 +1,3 @@
-
 part of 'register_cubit.dart';
 
 @immutable
@@ -12,11 +11,13 @@ class RegisterSuccess extends RegisterState {}
 
 class RegisterError extends RegisterState {
   final String message;
+
   RegisterError(this.message);
 }
 
 class RegisterValidationError extends RegisterState {
   final String message;
+
   RegisterValidationError(this.message);
 }
 

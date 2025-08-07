@@ -113,7 +113,6 @@ class PatientListScreen extends StatelessWidget {
                               height: context.deviceSize.height / 1.8,
                             ),
                             const SizedBox(height: 10),
-                            // const Text("No patients found."),
                           ],
                         ),
                       );

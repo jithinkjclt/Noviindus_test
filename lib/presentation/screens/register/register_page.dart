@@ -1,5 +1,3 @@
-// lib/presentation/screens/register/register_page.dart
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:noviindus_test/presentation/screens/register/cubit/register_cubit.dart';
@@ -17,10 +15,8 @@ import '../../widget/custom_dropdown.dart';
 import '../../widget/custome_snackbar.dart';
 import '../../widget/customtextfield.dart';
 import '../../widget/pdf_preview_widget.dart';
-
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +42,6 @@ class RegisterPage extends StatelessWidget {
           builder: (context, state) {
             final cubit = context.read<RegisterCubit>();
             final selectedTreatments = cubit.selectedTreatments;
-
             return Stack(
               children: [
                 SingleChildScrollView(
@@ -114,15 +109,15 @@ class RegisterPage extends StatelessWidget {
                               hintText: 'Choose your Branch',
                               items: cubit.allBranches,
                               itemAsString: (Map<String, dynamic> branch) =>
-                                  branch['name'] as String,
+                              branch['name'] as String,
                               onItemSelected:
                                   (Map<String, dynamic>? selectedBranch) {
-                                    if (selectedBranch != null) {
-                                      cubit.updateBranch(
-                                        selectedBranch['id'].toString(),
-                                      );
-                                    }
-                                  },
+                                if (selectedBranch != null) {
+                                  cubit.updateBranch(
+                                    selectedBranch['id'].toString(),
+                                  );
+                                }
+                              },
                               fillColor: textFieldFillColor,
                               borderColor: textFormBorder,
                               hintTextColor: textFormGrey,
@@ -148,24 +143,24 @@ class RegisterPage extends StatelessWidget {
                                           return AddPatientsDialog(
                                             treatments: cubit.allTreatments,
                                             initialTreatmentName:
-                                                treatment['title'],
+                                            treatment['title'],
                                             initialMaleCount:
-                                                treatment['maleCount'],
+                                            treatment['maleCount'],
                                             initialFemaleCount:
-                                                treatment['femaleCount'],
+                                            treatment['femaleCount'],
                                             onSave:
                                                 (
-                                                  treatmentName,
-                                                  maleCount,
-                                                  femaleCount,
+                                                treatmentName,
+                                                maleCount,
+                                                femaleCount,
                                                 ) {
-                                                  cubit.updateTreatment(
-                                                    index,
-                                                    treatmentName,
-                                                    maleCount,
-                                                    femaleCount,
-                                                  );
-                                                },
+                                              cubit.updateTreatment(
+                                                index,
+                                                treatmentName,
+                                                maleCount,
+                                                femaleCount,
+                                              );
+                                            },
                                           );
                                         },
                                       );
@@ -188,16 +183,16 @@ class RegisterPage extends StatelessWidget {
                                       treatments: cubit.allTreatments,
                                       onSave:
                                           (
-                                            treatmentName,
-                                            maleCount,
-                                            femaleCount,
+                                          treatmentName,
+                                          maleCount,
+                                          femaleCount,
                                           ) {
-                                            cubit.addTreatment(
-                                              treatmentName,
-                                              maleCount,
-                                              femaleCount,
-                                            );
-                                          },
+                                        cubit.addTreatment(
+                                          treatmentName,
+                                          maleCount,
+                                          femaleCount,
+                                        );
+                                      },
                                     );
                                   },
                                 );
@@ -272,11 +267,11 @@ class RegisterPage extends StatelessWidget {
                               children: [
                                 CustomDropdownField<String>(
                                   width:
-                                      MediaQuery.of(context).size.width / 2.3,
+                                  MediaQuery.of(context).size.width / 2.3,
                                   hintText: 'Hour',
                                   items: List.generate(
                                     12,
-                                    (index) =>
+                                        (index) =>
                                         (index + 1).toString().padLeft(2, '0'),
                                   ),
                                   itemAsString: (String hour) => hour,
@@ -295,7 +290,7 @@ class RegisterPage extends StatelessWidget {
                                   hintText: 'Minutes',
                                   items: List.generate(
                                     60,
-                                    (index) => index.toString().padLeft(2, '0'),
+                                        (index) => index.toString().padLeft(2, '0'),
                                   ),
                                   itemAsString: (String minutes) => minutes,
                                   onItemSelected: (String? selectedMinutes) {
@@ -311,135 +306,169 @@ class RegisterPage extends StatelessWidget {
                               ],
                             ),
                             50.hBox,
-                            CustomButton(
-                              iconSize: 18,
-                              onTap: () {
-                                Screen.open(
-                                  context,
-                                  Theme(
-                                    data: Theme.of(context).copyWith(
-                                      colorScheme: ColorScheme.light(
-                                        primary: buttonPrimaryColor,
-                                        onPrimary: colorWhite,
-                                        surface: Colors.white,
-                                        onSurface: Colors.black,
-                                      ),
-                                      iconTheme: IconThemeData(
-                                        color: buttonPrimaryColor,
-                                      ),
-                                      textButtonTheme: TextButtonThemeData(
-                                        style: TextButton.styleFrom(
-                                          foregroundColor: buttonPrimaryColor,
-                                        ),
-                                      ),
-                                    ),
-                                    child: Scaffold(
-                                      appBar: AppBar(
-                                        backgroundColor: Colors.white,
-                                        elevation: 0,
-                                        leading: IconButton(
-                                          icon: Icon(
-                                            Icons.close,
-                                            color: Colors.black,
-                                          ),
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                        actions: [
-                                          IconButton(
-                                            icon: Icon(
-                                              Icons.print,
-                                              color: Colors.black,
+                            BlocBuilder<RegisterCubit, RegisterState>(
+                              builder: (context, state) {
+                                return CustomButton(
+                                  isLoading: state is RegisterLoading,
+                                  iconSize: 18,
+                                  onTap: () async {
+                                    final patientData =
+                                    await cubit.registor(context);
+                                    if (patientData.isNotEmpty) {
+                                      Screen.open(
+                                        context,
+                                        Theme(
+                                          data: Theme.of(context).copyWith(
+                                            colorScheme: ColorScheme.light(
+                                              primary: buttonPrimaryColor,
+                                              onPrimary: colorWhite,
+                                              surface: Colors.white,
+                                              onSurface: Colors.black,
                                             ),
-                                            onPressed: () async {
-                                              await Printing.layoutPdf(
-                                                onLayout: (format) => generatePdf(
-                                                  name: 'John Doe',
-                                                  whatsappNumber:
-                                                      '+91 9876543210',
-                                                  address:
-                                                      '123 Demo Street, Bangalore',
-                                                  bookedDate:
-                                                      '06/08/2025 at 10:30 AM',
-                                                  treatmentDate: '10/08/2025',
-                                                  treatmentTime: '12:00 PM',
-                                                  treatments: [
-                                                    {
-                                                      'name': 'Panchakarma',
-                                                      'price': '₹300',
-                                                      'male': '2',
-                                                      'female': '1',
-                                                      'total': '₹900',
-                                                    },
-                                                    {
-                                                      'name': 'Abhyanga',
-                                                      'price': '₹500',
-                                                      'male': '1',
-                                                      'female': '0',
-                                                      'total': '₹500',
-                                                    },
-                                                  ],
-                                                  totalAmount: '₹1400',
-                                                  discount: '₹200',
-                                                  advance: '₹500',
-                                                  balance: '₹700',
-                                                ),
-                                              );
-                                            },
+                                            iconTheme: IconThemeData(
+                                              color: buttonPrimaryColor,
+                                            ),
+                                            textButtonTheme:
+                                            TextButtonThemeData(
+                                              style: TextButton.styleFrom(
+                                                foregroundColor:
+                                                buttonPrimaryColor,
+                                              ),
+                                            ),
                                           ),
-                                        ],
-                                      ),
-                                      body: PdfPreview(
-                                        canChangePageFormat: false,
-                                        canChangeOrientation: false,
-                                        canDebug: false,
-                                        allowPrinting: false,
-                                        allowSharing: false,
-                                        pdfPreviewPageDecoration: BoxDecoration(
-                                          color: Colors.white,
+                                          child: Scaffold(
+                                            appBar: AppBar(
+                                              backgroundColor: Colors.white,
+                                              elevation: 0,
+                                              leading: IconButton(
+                                                icon: const Icon(
+                                                  Icons.close,
+                                                  color: Colors.black,
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                              actions: [
+                                                IconButton(
+                                                  icon: const Icon(
+                                                    Icons.print,
+                                                    color: Colors.black,
+                                                  ),
+                                                  onPressed: () async {
+                                                    await Printing.layoutPdf(
+                                                      onLayout: (format) =>
+                                                          generatePdf(
+                                                            name:
+                                                            patientData['name'],
+                                                            whatsappNumber:
+                                                            patientData['phone'],
+                                                            address:
+                                                            patientData['address'],
+                                                            bookedDate: patientData[
+                                                            'date_nd_time'],
+                                                            treatmentDate: cubit
+                                                                .dateController
+                                                                .text
+                                                                .trim(),
+                                                            treatmentTime:
+                                                            '${cubit.hour}:${cubit.minutes}',
+                                                            treatments: cubit
+                                                                .selectedTreatments
+                                                                .map(
+                                                                  (t) => {
+                                                                'name':
+                                                                t['title'],
+                                                                'price': '₹0',
+                                                                'male':
+                                                                t['maleCount']
+                                                                    .toString(),
+                                                                'female':
+                                                                t['femaleCount']
+                                                                    .toString(),
+                                                                'total': '₹0',
+                                                              },
+                                                            )
+                                                                .toList(),
+                                                            totalAmount:
+                                                            '₹${patientData['total_amount']}',
+                                                            discount:
+                                                            '₹${patientData['discount_amount']}',
+                                                            advance:
+                                                            '₹${patientData['advance_amount']}',
+                                                            balance:
+                                                            '₹${patientData['balance_amount']}',
+                                                          ),
+                                                    );
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                            body: PdfPreview(
+                                              canChangePageFormat: false,
+                                              canChangeOrientation: false,
+                                              canDebug: false,
+                                              allowPrinting: false,
+                                              allowSharing: false,
+                                              pdfPreviewPageDecoration:
+                                              const BoxDecoration(
+                                                color: Colors.white,
+                                              ),
+                                              build: (format) => generatePdf(
+                                                name: patientData['name'],
+                                                whatsappNumber:
+                                                patientData['phone'],
+                                                address:
+                                                patientData['address'],
+                                                bookedDate:
+                                                patientData['date_nd_time'],
+                                                treatmentDate: cubit
+                                                    .dateController
+                                                    .text
+                                                    .trim(),
+                                                treatmentTime:
+                                                '${cubit.hour}:${cubit.minutes}',
+                                                treatments: cubit
+                                                    .selectedTreatments
+                                                    .map(
+                                                      (t) => {
+                                                    'name': t['title'],
+                                                    'price': '₹0',
+                                                    'male':
+                                                    t['maleCount']
+                                                        .toString(),
+                                                    'female':
+                                                    t['femaleCount']
+                                                        .toString(),
+                                                    'total': '₹0',
+                                                  },
+                                                )
+                                                    .toList(),
+                                                totalAmount:
+                                                '₹${patientData['total_amount']}',
+                                                discount:
+                                                '₹${patientData['discount_amount']}',
+                                                advance:
+                                                '₹${patientData['advance_amount']}',
+                                                balance:
+                                                '₹${patientData['balance_amount']}',
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                        build: (format) => generatePdf(
-                                          name: 'John Doe',
-                                          whatsappNumber: '+91 9876543210',
-                                          address: '123 Demo Street, Bangalore',
-                                          bookedDate: '06/08/2025 at 10:30 AM',
-                                          treatmentDate: '10/08/2025',
-                                          treatmentTime: '12:00 PM',
-                                          treatments: [
-                                            {
-                                              'name': 'Panchakarma',
-                                              'price': '₹300',
-                                              'male': '2',
-                                              'female': '1',
-                                              'total': '₹900',
-                                            },
-                                            {
-                                              'name': 'Abhyanga',
-                                              'price': '₹500',
-                                              'male': '1',
-                                              'female': '0',
-                                              'total': '₹500',
-                                            },
-                                          ],
-                                          totalAmount: '₹1400',
-                                          discount: '₹200',
-                                          advance: '₹500',
-                                          balance: '₹700',
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                      );
+                                    }
+                                  },
+                                  fontSize: 15,
+                                  weight: FontWeight.w500,
+                                  text: "Save",
+                                  boxColor: buttonPrimaryColor,
+                                  textColor: colorWhite,
+                                  height: 50,
+                                  width: double.infinity,
+                                  borderRadius: 10,
                                 );
                               },
-                              fontSize: 15,
-                              weight: FontWeight.w500,
-                              text: "Save",
-                              boxColor: buttonPrimaryColor,
-                              textColor: colorWhite,
-                              height: 50,
-                              width: double.infinity,
-                              borderRadius: 10,
                             ),
                             100.hBox,
                           ],
